@@ -16,6 +16,10 @@ public class Token {
 	private String termText;
 	//The char array backing termText
 	private char[] termBuffer;
+
+	private int termPosition;
+
+	private boolean isSpecial;
 	
 	/**
 	 * Method to set the termText to given text.
@@ -58,6 +62,20 @@ public class Token {
 	}
 	
 	/**
+	 * @return the termPosition
+	 */
+	public int getTermPosition() {
+		return termPosition;
+	}
+
+	/**
+	 * @param termPosition the termPosition to set
+	 */
+	public void setTermPosition(int termPosition) {
+		this.termPosition = termPosition;
+	}
+
+	/**
 	 * Method to merge this token with the given array of Tokens
 	 * You are free to update termText and termBuffer as you please
 	 * based upon your Token implementation. But the toString() method
@@ -66,7 +84,11 @@ public class Token {
 	 * @param tokens The token array to be merged
 	 */
 	protected void merge(Token...tokens) {
-		//TODO : YOU MUST IMPLEMENT THIS METHOD
+		StringBuilder mergedText = new StringBuilder();
+		for (Token t: tokens) {
+			mergedText.append(" " + t.termText);
+		}
+		this.setTermText(mergedText.toString().trim());
 	}
 	
 	/**
@@ -83,7 +105,7 @@ public class Token {
 	 */
 	@Override
 	public String toString() {
-		//TODO: YOU MUST IMPLEMENT THIS METHOD
-		return null;
+		String retval = (this.isSpecial ? null : this.termText);
+		return retval;
 	}
 }
