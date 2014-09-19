@@ -3,7 +3,9 @@
  */
 package edu.buffalo.cse.irf14.analysis.rules;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author ketkiram
@@ -14,6 +16,7 @@ import java.util.HashMap;
 public final class RulesHelper {
 
 	public static HashMap<String, String> commonContractionsMap = new HashMap<String, String>();
+	public static List<String> stopWordsList = new ArrayList<String>();
 
 	static {
 		commonContractionsMap.put("ain't", "am not");
@@ -93,5 +96,128 @@ public final class RulesHelper {
 		commonContractionsMap.put("you'll", "you will");
 		commonContractionsMap.put("you're", "you are");
 		commonContractionsMap.put("you've", "you have");
+	}
+
+	static {
+		stopWordsList.add("a");
+		stopWordsList.add("able");
+		stopWordsList.add("about");
+		stopWordsList.add("across");
+		stopWordsList.add("after");
+		stopWordsList.add("all");
+		stopWordsList.add("almost");
+		stopWordsList.add("also");
+		stopWordsList.add("am");
+		stopWordsList.add("among");
+		stopWordsList.add("an");
+		stopWordsList.add("and");
+		stopWordsList.add("any");
+		stopWordsList.add("are");
+		stopWordsList.add("as");
+		stopWordsList.add("at");
+		stopWordsList.add("be");
+		stopWordsList.add("because");
+		stopWordsList.add("been");
+		stopWordsList.add("but");
+		stopWordsList.add("by");
+		stopWordsList.add("can");
+		stopWordsList.add("cannot");
+		stopWordsList.add("could");
+		stopWordsList.add("dear");
+		stopWordsList.add("did");
+		stopWordsList.add("do");
+		stopWordsList.add("does");
+		stopWordsList.add("either");
+		stopWordsList.add("else");
+		stopWordsList.add("ever");
+		stopWordsList.add("every");
+		stopWordsList.add("for");
+		stopWordsList.add("from");
+		stopWordsList.add("get");
+		stopWordsList.add("got");
+		stopWordsList.add("had");
+		stopWordsList.add("has");
+		stopWordsList.add("have");
+		stopWordsList.add("he");
+		stopWordsList.add("her");
+		stopWordsList.add("hers");
+		stopWordsList.add("him");
+		stopWordsList.add("his");
+		stopWordsList.add("how");
+		stopWordsList.add("however");
+		stopWordsList.add("i");
+		stopWordsList.add("if");
+		stopWordsList.add("in");
+		stopWordsList.add("into");
+		stopWordsList.add("is");
+		stopWordsList.add("it");
+		stopWordsList.add("its");
+		stopWordsList.add("just");
+		stopWordsList.add("least");
+		stopWordsList.add("let");
+		stopWordsList.add("like");
+		stopWordsList.add("likely");
+		stopWordsList.add("may");
+		stopWordsList.add("me");
+		stopWordsList.add("might");
+		stopWordsList.add("most");
+		stopWordsList.add("must");
+		stopWordsList.add("my");
+		stopWordsList.add("neither");
+		stopWordsList.add("no");
+		stopWordsList.add("nor");
+		stopWordsList.add("not");
+		stopWordsList.add("of");
+		stopWordsList.add("off");
+		stopWordsList.add("often");
+		stopWordsList.add("on");
+		stopWordsList.add("only");
+		stopWordsList.add("or");
+		stopWordsList.add("oth");
+		stopWordsList.add("er");
+		stopWordsList.add("our");
+		stopWordsList.add("own");
+		stopWordsList.add("rather");
+		stopWordsList.add("said");
+		stopWordsList.add("say");
+		stopWordsList.add("says");
+		stopWordsList.add("she");
+		stopWordsList.add("should");
+		stopWordsList.add("since");
+		stopWordsList.add("so");
+		stopWordsList.add("some");
+		stopWordsList.add("than");
+		stopWordsList.add("that");
+		stopWordsList.add("the");
+		stopWordsList.add("their");
+		stopWordsList.add("them");
+		stopWordsList.add("then");
+		stopWordsList.add("there");
+		stopWordsList.add("these");
+		stopWordsList.add("they");
+		stopWordsList.add("this");
+		stopWordsList.add("tis");
+		stopWordsList.add("to");
+		stopWordsList.add("too");
+		stopWordsList.add("twas");
+		stopWordsList.add("us");
+		stopWordsList.add("wants");
+		stopWordsList.add("was");
+		stopWordsList.add("we");
+		stopWordsList.add("were");
+		stopWordsList.add("what");
+		stopWordsList.add("when");
+		stopWordsList.add("where");
+		stopWordsList.add("which");
+		stopWordsList.add("while");
+		stopWordsList.add("who");
+		stopWordsList.add("whom");
+		stopWordsList.add("why");
+		stopWordsList.add("will");
+		stopWordsList.add("with");
+		stopWordsList.add("would");
+		stopWordsList.add("yet");
+		stopWordsList.add("you");
+		stopWordsList.add("your");
 	}
 }
