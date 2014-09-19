@@ -58,10 +58,8 @@ public class SymbolFilter extends TokenFilter {
 
 			for (char symbol : endOfLineSymbols) {
 				if (text.charAt(text.length() - 1) == symbol) {
-					text.replace(symbol, ' ');
-					text.trim();
+					text.replace("" + symbol, "");
 				}
-
 			}
 
 			if (text.contains("'")) {
