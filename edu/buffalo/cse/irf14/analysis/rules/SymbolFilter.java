@@ -77,24 +77,27 @@ public class SymbolFilter extends TokenFilter {
 
 		if (getStream().hasNext()) {
 			token = getStream().next();
-			text = token.getTermText();
+			if (token != null) {
+				text = token.getTermText();
 
-			for (char symbol : RulesHelper.endOfLineSymbols) {
-				if (text.charAt(text.length() - 1) == symbol) {
-					text.replace("" + symbol, "");
+				for (char symbol : RulesHelper.endOfLineSymbols) {
+					if (text.charAt(text.length() - 1) == symbol) {
+						text.replace("" + symbol, "");
+					}
 				}
-			}
 
-			if (text.contains("'")) {
-				text = this.filterApostrophe(text);
-			}
+				if (text.contains("'")) {
+					text = this.filterApostrophe(text);
+				}
 
-			if (text.contains("-")) {
-				text = this.fiterHyphen(text);
+				if (text.contains("-")) {
+					text = this.fiterHyphen(text);
+				}
+				token.setTermText(text);
+				return true;
 			}
 		}
-		token.setTermText(text);
-		return true;
+		return false;
 	}
 
 }

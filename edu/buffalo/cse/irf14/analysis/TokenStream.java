@@ -113,4 +113,12 @@ public class TokenStream implements Iterator<Token> {
 		this.tokenList = tokenList;
 	}
 
+	@Override
+	public String toString() {
+		StringBuffer retVal = new StringBuffer("TokenStream : ");
+		for (Token t : tokenList) {
+			retVal.append(t.getTermText() + " | ");
+		}
+		return retVal.toString();
+	}
 }

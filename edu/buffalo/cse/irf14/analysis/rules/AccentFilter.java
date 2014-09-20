@@ -12,17 +12,15 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  * 
  */
 public class AccentFilter extends TokenFilter {
-	private final TokenStream stream;
 
 	public AccentFilter(TokenStream stream) {
 		super(stream);
-		this.stream = stream;
 	}
 
 	@Override
 	public boolean increment() throws TokenizerException {
-		if (stream.hasNext()) {
-			Token token = stream.next();
+		if (getStream().hasNext()) {
+			Token token = getStream().next();
 			if (token != null) {
 				String tokenString = Normalizer.normalize(token.getTermText(),
 						Normalizer.Form.NFD).replaceAll(
@@ -32,11 +30,6 @@ public class AccentFilter extends TokenFilter {
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public TokenStream getStream() {
-		return stream;
 	}
 
 }

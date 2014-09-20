@@ -6,7 +6,9 @@ package edu.buffalo.cse.irf14;
 import java.io.File;
 
 import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
+import edu.buffalo.cse.irf14.analysis.TokenFilter;
 import edu.buffalo.cse.irf14.analysis.TokenFilterFactory;
+import edu.buffalo.cse.irf14.analysis.TokenFilterType;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
 import edu.buffalo.cse.irf14.analysis.Tokenizer;
 import edu.buffalo.cse.irf14.document.Document;
@@ -65,9 +67,14 @@ public class Runner {
 						Tokenizer tokenizer = new Tokenizer();
 						TokenStream ts = tokenizer.consume(d
 								.getField(FieldNames.TITLE)[0]);
+						System.out.println(ts);
+
 						TokenFilterFactory tf = TokenFilterFactory
 								.getInstance();
-
+						TokenFilter tfilter = tf.getFilterByType(
+								TokenFilterType.SPECIALCHARS, ts);
+						while (tfilter.increment())
+							;
 						AnalyzerFactory af = AnalyzerFactory.getInstance();
 						// af.getAnalyzerForField(FieldNames.TITLE,d.getField(FieldNames.TITLE)[0]);
 						// writer.addDocument(d);

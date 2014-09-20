@@ -13,14 +13,13 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  * 
  */
 public class NumberFilter extends TokenFilter {
-	private final TokenStream stream;
 
 	/**
 	 * @param stream
 	 */
 	public NumberFilter(TokenStream stream) {
 		super(stream);
-		this.stream = stream;
+
 	}
 
 	/*
@@ -31,8 +30,8 @@ public class NumberFilter extends TokenFilter {
 	@Override
 	public boolean increment() throws TokenizerException {
 
-		if (stream.hasNext()) {
-			Token token = stream.next();
+		if (getStream().hasNext()) {
+			Token token = getStream().next();
 			if (token != null) {
 				token.setTermText(token.getTermText().replaceAll(
 						"(\\s+\\d+),(\\d+)", ""));
@@ -43,22 +42,12 @@ public class NumberFilter extends TokenFilter {
 				token.setTermText(token.getTermText()
 						.replaceAll("\\s+\\d+", ""));
 				if (token.getTermText().trim().isEmpty()) {
-					stream.remove();
+					getStream().remove();
 				}
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#getStream()
-	 */
-	@Override
-	public TokenStream getStream() {
-		return stream;
 	}
 
 }

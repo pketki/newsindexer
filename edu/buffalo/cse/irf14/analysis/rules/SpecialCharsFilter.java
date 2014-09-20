@@ -16,14 +16,13 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  * 
  */
 public class SpecialCharsFilter extends TokenFilter {
-	private final TokenStream stream;
 
 	/**
 	 * @param stream
 	 */
 	public SpecialCharsFilter(TokenStream stream) {
 		super(stream);
-		this.stream = stream;
+
 	}
 
 	/*
@@ -34,8 +33,8 @@ public class SpecialCharsFilter extends TokenFilter {
 	@Override
 	public boolean increment() throws TokenizerException {
 		// TODO Auto-generated method stub
-		if (stream.hasNext()) {
-			Token token = stream.next();
+		if (getStream().hasNext()) {
+			Token token = getStream().next();
 			if (token != null) {
 				Pattern pattern = Pattern.compile("[^a-zA-Z0-9.-]");
 				Matcher match = pattern.matcher(token.getTermText());
@@ -44,22 +43,12 @@ public class SpecialCharsFilter extends TokenFilter {
 							"[^a-zA-Z0-9.-]", ""));
 				}
 				if (token.getTermText().trim().isEmpty()) {
-					stream.remove();
+					getStream().remove();
 				}
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#getStream()
-	 */
-	@Override
-	public TokenStream getStream() {
-		return stream;
 	}
 
 }
