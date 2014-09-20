@@ -15,13 +15,15 @@ import java.util.List;
 public class TokenStream implements Iterator<Token> {
 
 	private List<Token> tokenList;
+	private int position;
 
 	/**
 	 * 
 	 */
 	public TokenStream() {
 		super();
-		setTokenList(new ArrayList<Token>());
+		this.setTokenList(new ArrayList<Token>());
+		this.position = -1;
 	}
 
 	/**
@@ -32,8 +34,7 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	@Override
 	public boolean hasNext() {
-		// TODO YOU MUST IMPLEMENT THIS
-		return false;
+		return (this.position < this.tokenList.size());
 	}
 
 	/**
@@ -44,8 +45,14 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	@Override
 	public Token next() {
-		// TODO YOU MUST IMPLEMENT THIS
+		this.position++;
+		if (this.hasNext())
+			return this.tokenList.get(position);
 		return null;
+	}
+
+	public Token previous() {
+		return (position > 0 ? this.tokenList.get(position - 1) : null);
 	}
 
 	/**
@@ -55,8 +62,13 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	@Override
 	public void remove() {
-		// TODO YOU MUST IMPLEMENT THIS
-
+		List<Token> tempList = new ArrayList<Token>();
+		for (int i = 0; i < this.tokenList.size(); i++) {
+			if (i != this.position)
+				tempList.add(this.tokenList.get(i));
+		}
+		this.tokenList = tempList;
+		this.position++;
 	}
 
 	/**
@@ -65,7 +77,7 @@ public class TokenStream implements Iterator<Token> {
 	 * reset() must always return true.
 	 */
 	public void reset() {
-		// TODO : YOU MUST IMPLEMENT THIS
+		this.position = -1;
 	}
 
 	/**
@@ -80,7 +92,9 @@ public class TokenStream implements Iterator<Token> {
 	 *            : The stream to be appended
 	 */
 	public void append(TokenStream stream) {
-		// TODO : YOU MUST IMPLEMENT THIS
+		while (stream.hasNext()) {
+			this.tokenList.add(stream.next());
+		}
 	}
 
 	/**
@@ -94,15 +108,7 @@ public class TokenStream implements Iterator<Token> {
 	 *         has been reached or the current Token was removed
 	 */
 	public Token getCurrent() {
-		// TODO: YOU MUST IMPLEMENT THIS
-		return null;
-	}
-
-	/**
-	 * @return the tokenList
-	 */
-	public List<Token> getTokenList() {
-		return tokenList;
+		return (position < 0 ? null : this.tokenList.get(position));
 	}
 
 	/**
