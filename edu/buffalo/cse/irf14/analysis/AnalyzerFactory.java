@@ -55,11 +55,15 @@ public class AnalyzerFactory {
 		case CATEGORY:
 			analyzer = new CategoryAnalyzer();
 			break;
+		case CONTENT:
+		case FILEID:
+		case NEWSDATE:
+		case TITLE:
+			analyzer = new TermAnalyzer();
 		case PLACE:
 			analyzer = new PlaceAnalyzer();
 			break;
 		default:
-			analyzer = new TermAnalyzer();
 			break;
 		}
 		return analyzer;

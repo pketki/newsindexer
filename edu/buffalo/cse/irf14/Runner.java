@@ -5,7 +5,12 @@ package edu.buffalo.cse.irf14;
 
 import java.io.File;
 
+import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
+import edu.buffalo.cse.irf14.analysis.TokenFilterFactory;
+import edu.buffalo.cse.irf14.analysis.TokenStream;
+import edu.buffalo.cse.irf14.analysis.Tokenizer;
 import edu.buffalo.cse.irf14.document.Document;
+import edu.buffalo.cse.irf14.document.FieldNames;
 import edu.buffalo.cse.irf14.document.Parser;
 import edu.buffalo.cse.irf14.document.ParserException;
 
@@ -56,6 +61,15 @@ public class Runner {
 						d = Parser.parse(dir.getAbsolutePath() + File.separator
 								+ f);
 						System.out.println(d);
+
+						Tokenizer tokenizer = new Tokenizer();
+						TokenStream ts = tokenizer.consume(d
+								.getField(FieldNames.TITLE)[0]);
+						TokenFilterFactory tf = TokenFilterFactory
+								.getInstance();
+
+						AnalyzerFactory af = AnalyzerFactory.getInstance();
+						// af.getAnalyzerForField(FieldNames.TITLE,d.getField(FieldNames.TITLE)[0]);
 						// writer.addDocument(d);
 					} catch (ParserException e) {
 						// TODO Auto-generated catch block
