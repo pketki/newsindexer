@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.irf14.analysis;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public class Tokenizer {
 	 */
 	public TokenStream consume(String str) throws TokenizerException {
 		final TokenStream tokenStream = new TokenStream();
-		final List<Token> tokenList = tokenStream.getTokenList();
+		final List<Token> tokenList = new ArrayList<Token>();
 
 		String[] tokenString = str.split(this.delimiter);
 		int tokenIndex = 0;
@@ -56,6 +57,7 @@ public class Tokenizer {
 			tokenList.add(new Token(tokenTerm, tokenIndex));
 			tokenIndex++;
 		}
+		tokenStream.setTokenList(tokenList);
 		return tokenStream;
 	}
 }

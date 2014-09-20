@@ -51,6 +51,10 @@ public class TokenStream implements Iterator<Token> {
 		return null;
 	}
 
+	public Token previous() {
+		return (position > 0 ? this.tokenList.get(position - 1) : null);
+	}
+
 	/**
 	 * Method to remove the current Token from the stream. Note that "current"
 	 * token refers to the Token just returned by the next method. Must thus be
@@ -105,13 +109,6 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	public Token getCurrent() {
 		return (position < 0 ? null : this.tokenList.get(position));
-	}
-
-	/**
-	 * @return the tokenList
-	 */
-	public List<Token> getTokenList() {
-		return tokenList;
 	}
 
 	/**
