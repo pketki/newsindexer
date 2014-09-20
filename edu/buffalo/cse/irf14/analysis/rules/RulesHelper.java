@@ -15,6 +15,7 @@ import java.util.List;
  */
 public final class RulesHelper {
 
+	public static char[] endOfLineSymbols = { '.', '?', '!' };
 	public static HashMap<String, String> commonContractionsMap = new HashMap<String, String>();
 	public static List<String> stopWordsList = new ArrayList<String>();
 
