@@ -13,7 +13,7 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  * 
  */
 public class StemmerFilter extends TokenFilter {
-	private final TokenStream stream;
+
 	private Stemmer stemmer;
 
 	/**
@@ -21,7 +21,7 @@ public class StemmerFilter extends TokenFilter {
 	 */
 	public StemmerFilter(TokenStream stream) {
 		super(stream);
-		this.stream = stream;
+
 	}
 
 	/*
@@ -31,8 +31,8 @@ public class StemmerFilter extends TokenFilter {
 	 */
 	@Override
 	public boolean increment() throws TokenizerException {
-		if (stream.hasNext()) {
-			Token token = stream.next();
+		if (getStream().hasNext()) {
+			Token token = getStream().next();
 			if (token != null) {
 				// token = token.toLowerCase();
 				if (isLettersOnly(token)) {
@@ -61,16 +61,6 @@ public class StemmerFilter extends TokenFilter {
 
 	private boolean isLettersOnly(Token token) {
 		return token.getTermText().matches("[a-z]*");
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#getStream()
-	 */
-	@Override
-	public TokenStream getStream() {
-		return stream;
 	}
 
 	class Stemmer {

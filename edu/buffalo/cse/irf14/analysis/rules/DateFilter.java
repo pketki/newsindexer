@@ -13,14 +13,13 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  * 
  */
 public class DateFilter extends TokenFilter {
-	private final TokenStream stream;
 
 	/**
 	 * @param stream
 	 */
 	public DateFilter(TokenStream stream) {
 		super(stream);
-		this.stream = stream;
+
 	}
 
 	/*
@@ -30,23 +29,13 @@ public class DateFilter extends TokenFilter {
 	 */
 	@Override
 	public boolean increment() throws TokenizerException {
-		if (stream.hasNext()) {
-			Token token = stream.next();
+		if (getStream().hasNext()) {
+			Token token = getStream().next();
 			if (token != null) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#getStream()
-	 */
-	@Override
-	public TokenStream getStream() {
-		return stream;
 	}
 
 }

@@ -13,14 +13,12 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  * 
  */
 public class StopWordsFilter extends TokenFilter {
-	private final TokenStream stream;
 
 	/**
 	 * @param stream
 	 */
 	public StopWordsFilter(TokenStream stream) {
 		super(stream);
-		this.stream = stream;
 	}
 
 	/*
@@ -30,26 +28,16 @@ public class StopWordsFilter extends TokenFilter {
 	 */
 	@Override
 	public boolean increment() throws TokenizerException {
-		if (stream.hasNext()) {
-			Token token = stream.next();
+		if (getStream().hasNext()) {
+			Token token = getStream().next();
 			if (token != null) {
 				if (RulesHelper.stopWordsList.contains(token.getTermText())) {
-					stream.remove();
+					getStream().remove();
 				}
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#getStream()
-	 */
-	@Override
-	public TokenStream getStream() {
-		return stream;
 	}
 
 }
