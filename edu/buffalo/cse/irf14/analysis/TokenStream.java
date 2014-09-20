@@ -3,7 +3,9 @@
  */
 package edu.buffalo.cse.irf14.analysis;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author nikhillo Class that represents a stream of Tokens. All
@@ -11,6 +13,16 @@ import java.util.Iterator;
  *         implement their behavior
  */
 public class TokenStream implements Iterator<Token> {
+
+	private List<Token> tokenList;
+
+	/**
+	 * 
+	 */
+	public TokenStream() {
+		super();
+		setTokenList(new ArrayList<Token>());
+	}
 
 	/**
 	 * Method that checks if there is any Token left in the stream with regards
@@ -84,6 +96,21 @@ public class TokenStream implements Iterator<Token> {
 	public Token getCurrent() {
 		// TODO: YOU MUST IMPLEMENT THIS
 		return null;
+	}
+
+	/**
+	 * @return the tokenList
+	 */
+	public List<Token> getTokenList() {
+		return tokenList;
+	}
+
+	/**
+	 * @param tokenList
+	 *            the tokenList to set
+	 */
+	public void setTokenList(List<Token> tokenList) {
+		this.tokenList = tokenList;
 	}
 
 }

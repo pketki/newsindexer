@@ -18,11 +18,8 @@ public class SymbolFilter extends TokenFilter {
 	 * @param stream
 	 */
 
-	private final TokenStream stream;
-
 	public SymbolFilter(TokenStream stream) {
 		super(stream);
-		this.stream = stream;
 	}
 
 	/**
@@ -78,8 +75,8 @@ public class SymbolFilter extends TokenFilter {
 		Token token = null;
 		String text = null;
 
-		if (stream.hasNext()) {
-			token = stream.next();
+		if (getStream().hasNext()) {
+			token = getStream().next();
 			text = token.getTermText();
 
 			for (char symbol : RulesHelper.endOfLineSymbols) {
@@ -98,11 +95,6 @@ public class SymbolFilter extends TokenFilter {
 		}
 		token.setTermText(text);
 		return true;
-	}
-
-	@Override
-	public TokenStream getStream() {
-		return this.stream;
 	}
 
 }

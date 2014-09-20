@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.irf14.analysis;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -11,13 +12,13 @@ import java.util.Scanner;
  */
 public class Tokenizer {
 
-	private Scanner tokenReader;
+	private final String delimiter;
 
 	/**
 	 * Default constructor. Assumes tokens are whitespace delimited
 	 */
 	public Tokenizer() {
-		tokenReader = new Scanner("");
+		this.delimiter = " ";
 	}
 
 	/**
@@ -27,7 +28,7 @@ public class Tokenizer {
 	 *            : The delimiter to be used
 	 */
 	public Tokenizer(String delim) {
-		tokenReader.useDelimiter(delim);
+		this.delimiter = delim;
 	}
 
 	/**
@@ -46,7 +47,17 @@ public class Tokenizer {
 	 *             : In case any exception occurs during tokenization
 	 */
 	public TokenStream consume(String str) throws TokenizerException {
-		// TODO : YOU MUST IMPLEMENT THIS METHOD
-		return null;
+		final TokenStream tokenStream = new TokenStream();
+		final List<Token> tokenList = tokenStream.getTokenList();
+
+		Scanner tokenReader = new Scanner(str);
+		tokenReader.useDelimiter(this.delimiter);
+		int position = 0;
+
+		while (tokenReader.hasNext()) {
+			tokenList.add(new Token(tokenReader.next(), position));
+			position++;
+		}
+		return tokenStream;
 	}
 }
