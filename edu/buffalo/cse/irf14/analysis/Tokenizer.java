@@ -4,7 +4,6 @@
 package edu.buffalo.cse.irf14.analysis;
 
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * @author nikhillo Class that converts a given string into a
@@ -50,13 +49,12 @@ public class Tokenizer {
 		final TokenStream tokenStream = new TokenStream();
 		final List<Token> tokenList = tokenStream.getTokenList();
 
-		Scanner tokenReader = new Scanner(str);
-		tokenReader.useDelimiter(this.delimiter);
-		int position = 0;
+		String[] tokenString = str.split(this.delimiter);
+		int tokenIndex = 0;
 
-		while (tokenReader.hasNext()) {
-			tokenList.add(new Token(tokenReader.next(), position));
-			position++;
+		for (String tokenTerm : tokenString) {
+			tokenList.add(new Token(tokenTerm, tokenIndex));
+			tokenIndex++;
 		}
 		return tokenStream;
 	}
