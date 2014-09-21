@@ -54,7 +54,8 @@ public class Tokenizer {
 		int tokenIndex = 0;
 
 		for (String tokenTerm : tokenString) {
-			if (tokenTerm.length() > 0) {
+			tokenTerm = tokenTerm.trim();
+			if (!tokenTerm.isEmpty()) {
 				tokenList.add(new Token(tokenTerm, tokenIndex));
 				tokenIndex++;
 			}

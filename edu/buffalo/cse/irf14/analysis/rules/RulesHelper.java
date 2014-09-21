@@ -6,6 +6,7 @@ package edu.buffalo.cse.irf14.analysis.rules;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author ketkiram
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public final class RulesHelper {
 
-	public static char[] endOfLineSymbols = { '.', '?', '!' };
+	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
 	public static HashMap<String, String> commonContractionsMap = new HashMap<String, String>();
 	public static List<String> stopWordsList = new ArrayList<String>();
 

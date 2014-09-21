@@ -3,6 +3,8 @@
  */
 package edu.buffalo.cse.irf14.analysis.rules;
 
+import java.util.regex.Matcher;
+
 import edu.buffalo.cse.irf14.analysis.Token;
 import edu.buffalo.cse.irf14.analysis.TokenFilter;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
@@ -84,13 +86,12 @@ public class SymbolFilter extends TokenFilter {
 		}
 
 		if (token != null) {
-			text = token.getTermText().trim();
+			text = token.getTermText();
 
-			for (char symbol : RulesHelper.endOfLineSymbols) {
-				if (text.length() == 1 || text.charAt(0) == symbol
-						|| text.charAt(text.length() - 1) == symbol) {
-					text = text.replace("" + symbol, "");
-				}
+			Matcher symbolMatcher = RulesHelper.endOfLineSymbols.matcher(text);
+			while (symbolMatcher.find()) {
+				text = text.replace(symbolMatcher.group(0), symbolMatcher
+						.group(0).replaceAll("[.!\\?]", ""));
 			}
 
 			if (text.contains("'")) {
@@ -109,5 +110,4 @@ public class SymbolFilter extends TokenFilter {
 		}
 		return false;
 	}
-
 }
