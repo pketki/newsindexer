@@ -3,6 +3,8 @@
  */
 package edu.buffalo.cse.irf14.analysis.rules;
 
+import java.util.regex.Matcher;
+
 import edu.buffalo.cse.irf14.analysis.Token;
 import edu.buffalo.cse.irf14.analysis.TokenFilter;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
@@ -31,6 +33,7 @@ public class NumberFilter extends TokenFilter {
 	public boolean increment() throws TokenizerException {
 
 		Token token = null;
+		String text = null;
 
 		if (this.isChaining())
 			token = getStream().getCurrent();
@@ -38,9 +41,17 @@ public class NumberFilter extends TokenFilter {
 			token = getStream().next();
 		}
 		if (token != null) {
-			if (token.getTermText().matches("(\\d)*[\\/.,\\-]?(\\d)*(%)*")) {
-				getStream().remove();
+			text = token.getTermText();
+			Matcher symbolMatcher = RulesHelper.numeric.matcher(text);
+			while (symbolMatcher.find()) {
+				text = text.replace(symbolMatcher.group(0), symbolMatcher
+						.group(0).replaceAll("\\d+[.,\\-]?\\d+", ""));
 			}
+
+			if (text.isEmpty())
+				getStream().remove();
+			else
+				token.setTermText(text);
 			return true;
 		}
 

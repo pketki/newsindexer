@@ -47,6 +47,9 @@ public class Tokenizer {
 	 *             : In case any exception occurs during tokenization
 	 */
 	public TokenStream consume(String str) throws TokenizerException {
+		if (str == null || str.trim().isEmpty())
+			throw new TokenizerException();
+
 		final TokenStream tokenStream = new TokenStream();
 
 		String[] tokenString = str.split(this.delimiter);

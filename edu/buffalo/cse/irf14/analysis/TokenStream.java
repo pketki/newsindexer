@@ -16,14 +16,16 @@ public class TokenStream implements Iterator<Token> {
 
 	private List<Token> tokenList;
 	private int position;
+	private int size;
 
 	/**
 	 * 
 	 */
 	public TokenStream() {
 		super();
-		this.setTokenList(new Vector<Token>());
-		this.position = -1;
+		setTokenList(new Vector<Token>());
+		position = -1;
+		size = 0;
 	}
 
 	/**
@@ -34,7 +36,7 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	@Override
 	public boolean hasNext() {
-		return (this.position < this.tokenList.size());
+		return (!tokenList.isEmpty() && position < (size - 1));
 	}
 
 	/**
@@ -45,18 +47,23 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	@Override
 	public Token next() {
-		this.position++;
-		if (this.hasNext())
-			return this.tokenList.get(position);
+		if (this.hasNext()) {
+			this.position++;
+			return tokenList.get(position);
+		}
 		return null;
 	}
 
 	public boolean hasPrevious() {
-		return ((position - 1) >= 0);
+		return (!tokenList.isEmpty() && position > 0);
 	}
 
 	public Token previous() {
-		return (position > 0 ? this.tokenList.get(position - 1) : null);
+		if (this.hasPrevious()) {
+			this.position--;
+			return tokenList.get(position);
+		}
+		return null;
 	}
 
 	/**
@@ -67,9 +74,10 @@ public class TokenStream implements Iterator<Token> {
 	@Override
 	public void remove() {
 		// check we're not at the beginning of the token list
-		if (position >= 0) {
-			this.tokenList.remove(position);
+		if (!tokenList.isEmpty() && position >= 0) {
+			tokenList.remove(position);
 			position--;
+			size = tokenList.size();
 		}
 	}
 
@@ -94,8 +102,12 @@ public class TokenStream implements Iterator<Token> {
 	 *            : The stream to be appended
 	 */
 	public void append(TokenStream stream) {
-		while (stream.hasNext()) {
-			this.tokenList.add(stream.next());
+		if (stream != null && stream.getSize() > 0) {
+			stream.reset();
+			while (stream.hasNext()) {
+				tokenList.add(stream.next());
+			}
+			size += stream.getSize();
 		}
 	}
 
@@ -110,7 +122,7 @@ public class TokenStream implements Iterator<Token> {
 	 *         has been reached or the current Token was removed
 	 */
 	public Token getCurrent() {
-		return (position < 0 ? null : this.tokenList.get(position));
+		return (position < 0 ? null : tokenList.get(position));
 	}
 
 	/**
@@ -119,6 +131,14 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	public void setTokenList(List<Token> tokenList) {
 		this.tokenList = tokenList;
+		size = tokenList.size();
+	}
+
+	/**
+	 * @return the size
+	 */
+	public int getSize() {
+		return size;
 	}
 
 	@Override

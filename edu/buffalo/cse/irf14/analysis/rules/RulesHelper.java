@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 public final class RulesHelper {
 
 	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
+	public static Pattern numeric = Pattern.compile("\\d*[\\/.,\\-]?\\d*%*$");
 	public static HashMap<String, String> commonContractionsMap = new HashMap<String, String>();
 	public static List<String> stopWordsList = new ArrayList<String>();
 
