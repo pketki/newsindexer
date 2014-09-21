@@ -30,23 +30,27 @@ public class NumberFilter extends TokenFilter {
 	@Override
 	public boolean increment() throws TokenizerException {
 
-		if (getStream().hasNext()) {
-			Token token = getStream().next();
-			if (token != null) {
-				token.setTermText(token.getTermText().replaceAll(
-						"(\\s+\\d+),(\\d+)", ""));
-				token.setTermText(token.getTermText().replaceAll(
-						"(\\d.*?\\.\\d.*?)(%)", ""));
-				token.setTermText(token.getTermText().replaceAll(
-						"(\\d+)(\\/)(\\d+)", ""));
-				token.setTermText(token.getTermText()
-						.replaceAll("\\s+\\d+", ""));
-				if (token.getTermText().trim().isEmpty()) {
-					getStream().remove();
-				}
-				return true;
-			}
+		Token token = null;
+
+		if (this.isChaining())
+			token = getStream().getCurrent();
+		if (token == null && getStream().hasNext()) {
+			token = getStream().next();
 		}
+		if (token != null) {
+			token.setTermText(token.getTermText().replaceAll(
+					"(\\s*\\d+),(\\d+)", ""));
+			token.setTermText(token.getTermText().replaceAll(
+					"(\\d.*?\\.\\d.*?)(%)", ""));
+			token.setTermText(token.getTermText().replaceAll(
+					"(\\d+)(\\/)(\\d+)", ""));
+			token.setTermText(token.getTermText().replaceAll("\\s*\\d+", ""));
+			if (token.getTermText().trim().isEmpty()) {
+				getStream().remove();
+			}
+			return true;
+		}
+
 		return false;
 	}
 

@@ -24,38 +24,39 @@ public class StemmerFilter extends TokenFilter {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#increment()
-	 */
 	@Override
 	public boolean increment() throws TokenizerException {
-		if (getStream().hasNext()) {
-			Token token = getStream().next();
-			if (token != null) {
-				// token = token.toLowerCase();
-				if (isLettersOnly(token)) {
-					stemmer = new Stemmer();
-					for (char c : token.getTermBuffer()) {
-						stemmer.add(c);
-					}
+		Token token = null;
 
-					stemmer.stem();
-					token.setTermText(stemmer.toString());
-					// stream.previous(); // move token back as we need to
-					// change
-					// last read token
-					// stream.getCurrent().setTermText(stemmer.toString());
-					// stream.set(stemmer.toString()); // change value, no
-					// iterator
-					// move
-					// stream.next(); // move iter to next posiiton, beyond the
-					// token we just changed
-				}
-				return true;
-			}
+		if (this.isChaining())
+			token = getStream().getCurrent();
+		if (token == null && getStream().hasNext()) {
+			token = getStream().next();
 		}
+
+		if (token != null) {
+			// token = token.toLowerCase();
+			if (isLettersOnly(token)) {
+				stemmer = new Stemmer();
+				for (char c : token.getTermBuffer()) {
+					stemmer.add(c);
+				}
+
+				stemmer.stem();
+				token.setTermText(stemmer.toString());
+				// stream.previous(); // move token back as we need to
+				// change
+				// last read token
+				// stream.getCurrent().setTermText(stemmer.toString());
+				// stream.set(stemmer.toString()); // change value, no
+				// iterator
+				// move
+				// stream.next(); // move iter to next posiiton, beyond the
+				// token we just changed
+			}
+			return true;
+		}
+
 		return false;
 	}
 

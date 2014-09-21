@@ -5,10 +5,8 @@ package edu.buffalo.cse.irf14;
 
 import java.io.File;
 
+import edu.buffalo.cse.irf14.analysis.Analyzer;
 import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
-import edu.buffalo.cse.irf14.analysis.TokenFilter;
-import edu.buffalo.cse.irf14.analysis.TokenFilterFactory;
-import edu.buffalo.cse.irf14.analysis.TokenFilterType;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
 import edu.buffalo.cse.irf14.analysis.Tokenizer;
 import edu.buffalo.cse.irf14.document.Document;
@@ -33,8 +31,8 @@ public class Runner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// String ipDir =
-		// "D:/MS at UB/Semester 1/IR/news_training/training";//args[0];
+		// String ipDir = "D:/MS at UB/Semester 1/IR/news_training/training";//
+		// args[0];
 		String ipDir = "C:/KettWorkspace/inputfile";
 		// String indexDir = args[1];
 		// more? idk!
@@ -65,18 +63,55 @@ public class Runner {
 						System.out.println(d);
 
 						Tokenizer tokenizer = new Tokenizer();
-						TokenStream ts = tokenizer.consume(d
-								.getField(FieldNames.TITLE)[0]);
-						System.out.println(ts);
+						if (d.getField(FieldNames.AUTHOR) != null) {
+							TokenStream ts = tokenizer.consume(d
+									.getField(FieldNames.AUTHOR)[0]);
+							System.out.println(ts);
+							AnalyzerFactory af = AnalyzerFactory.getInstance();
+							Analyzer an = af.getAnalyzerForField(
+									FieldNames.AUTHOR, ts);
+							while (an.increment())
+								;
 
-						TokenFilterFactory tf = TokenFilterFactory
-								.getInstance();
-						TokenFilter tfilter = tf.getFilterByType(
-								TokenFilterType.SPECIALCHARS, ts);
-						while (tfilter.increment())
-							;
-						AnalyzerFactory af = AnalyzerFactory.getInstance();
-						// af.getAnalyzerForField(FieldNames.TITLE,d.getField(FieldNames.TITLE)[0]);
+							System.out.println(ts);
+						}
+						if (d.getField(FieldNames.TITLE) != null) {
+							TokenStream ts = tokenizer.consume(d
+									.getField(FieldNames.TITLE)[0]);
+							System.out.println(ts);
+							AnalyzerFactory af = AnalyzerFactory.getInstance();
+							Analyzer an = af.getAnalyzerForField(
+									FieldNames.TITLE, ts);
+							while (an.increment())
+								;
+
+							System.out.println(ts);
+						}
+						if (d.getField(FieldNames.PLACE) != null) {
+							TokenStream ts = tokenizer.consume(d
+									.getField(FieldNames.PLACE)[0]);
+							System.out.println(ts);
+							AnalyzerFactory af = AnalyzerFactory.getInstance();
+							Analyzer an = af.getAnalyzerForField(
+									FieldNames.PLACE, ts);
+							while (an.increment())
+								;
+
+							System.out.println(ts);
+						}
+						if (d.getField(FieldNames.CONTENT) != null) {
+							TokenStream ts = tokenizer.consume(d
+									.getField(FieldNames.CONTENT)[0]);
+							System.out.println(ts);
+							AnalyzerFactory af = AnalyzerFactory.getInstance();
+							Analyzer an = af.getAnalyzerForField(
+									FieldNames.CONTENT, ts);
+							while (an.increment())
+								;
+
+							System.out.println(ts);
+						}
+
 						// writer.addDocument(d);
 					} catch (ParserException e) {
 						// TODO Auto-generated catch block

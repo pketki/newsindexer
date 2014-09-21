@@ -19,16 +19,23 @@ public class AccentFilter extends TokenFilter {
 
 	@Override
 	public boolean increment() throws TokenizerException {
-		if (getStream().hasNext()) {
-			Token token = getStream().next();
-			if (token != null) {
-				String tokenString = Normalizer.normalize(token.getTermText(),
-						Normalizer.Form.NFD).replaceAll(
-						"\\p{InCombiningDiacriticalMarks}+", "");
-				token.setTermText(tokenString);
-				return true;
-			}
+		Token token = null;
+
+		if (this.isChaining())
+			token = getStream().getCurrent();
+		if (token == null && getStream().hasNext()) {
+			token = getStream().next();
 		}
+
+		if (token != null) {
+			String tokenString = Normalizer.normalize(token.getTermText(),
+					Normalizer.Form.NFD).replaceAll(
+					"\\p{InCombiningDiacriticalMarks}+", "");
+			token.setTermText(tokenString);
+			System.out.println(tokenString);
+			return true;
+		}
+		getStream().reset();
 		return false;
 	}
 

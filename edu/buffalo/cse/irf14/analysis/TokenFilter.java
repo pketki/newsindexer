@@ -14,6 +14,7 @@ package edu.buffalo.cse.irf14.analysis;
 public abstract class TokenFilter implements Analyzer {
 
 	private final TokenStream stream;
+	private boolean chaining;
 
 	/**
 	 * Default constructor, creates an instance over the given TokenStream
@@ -23,6 +24,22 @@ public abstract class TokenFilter implements Analyzer {
 	 */
 	public TokenFilter(TokenStream stream) {
 		this.stream = stream;
+		this.chaining = false;
+	}
+
+	/**
+	 * @return the chaining
+	 */
+	public boolean isChaining() {
+		return chaining;
+	}
+
+	/**
+	 * @param chaining
+	 *            the chaining to set
+	 */
+	public void setChaining(boolean chaining) {
+		this.chaining = chaining;
 	}
 
 	/**

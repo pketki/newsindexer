@@ -50,18 +50,19 @@ public class AnalyzerFactory {
 	public Analyzer getAnalyzerForField(FieldNames name, TokenStream stream) {
 		switch (name) {
 		case AUTHOR:
-			analyzer = new AuthorAnalyzer();
+			analyzer = new AuthorAnalyzer(stream);
 			break;
 		case CATEGORY:
-			analyzer = new CategoryAnalyzer();
+			analyzer = new CategoryAnalyzer(stream);
 			break;
 		case CONTENT:
 		case FILEID:
 		case NEWSDATE:
 		case TITLE:
-			analyzer = new TermAnalyzer();
+			analyzer = new TermAnalyzer(stream);
+			break;
 		case PLACE:
-			analyzer = new PlaceAnalyzer();
+			analyzer = new PlaceAnalyzer(stream);
 			break;
 		default:
 			break;

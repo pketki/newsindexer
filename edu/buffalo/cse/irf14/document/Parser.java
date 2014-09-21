@@ -63,12 +63,13 @@ public class Parser {
 
 					// capture place till date token arrives
 					while (!reader.hasNext(month) && reader.hasNext()) {
-						place.append(reader.next());
+						place.append(reader.next() + " ");
 					}
 					// if a file is unformatted and has no date put everything
 					// in content
 					if (!reader.hasNext()) {
-						document.setField(FieldNames.CONTENT, place.toString());
+						document.setField(FieldNames.CONTENT, place.toString()
+								.trim());
 						break;
 					}
 					document.setField(FieldNames.PLACE, place.toString());

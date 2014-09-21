@@ -31,23 +31,28 @@ public class CapitalizationFilter extends TokenFilter {
 	 */
 	@Override
 	public boolean increment() throws TokenizerException {
-		if (getStream().hasNext()) {
-			Token token = getStream().next();
-			if (token != null) {
-				Pattern pattern = Pattern.compile("[a-z]+[A-Z]+");
-				Matcher match = pattern.matcher(token.getTermText());
-				if (!match.find()) {
-					if (!token.getTermText().equals(
-							token.getTermText().toUpperCase())) {
-						token.setTermText(token.getTermText().toLowerCase());
-					} else if (!Character.isLowerCase(token.getTermText()
-							.charAt(0))) {
-						token.setTermText(token.getTermText().toLowerCase());
-					}
-				}
-				return true;
-			}
+		Token token = null;
+
+		if (this.isChaining())
+			token = getStream().getCurrent();
+		if (token == null && getStream().hasNext()) {
+			token = getStream().next();
 		}
+		if (token != null) {
+			Pattern pattern = Pattern.compile("[a-z]+[A-Z]+");
+			Matcher match = pattern.matcher(token.getTermText());
+			if (!match.find()) {
+				if (!token.getTermText().equals(
+						token.getTermText().toUpperCase())) {
+					token.setTermText(token.getTermText().toLowerCase());
+				} else if (!Character
+						.isLowerCase(token.getTermText().charAt(0))) {
+					token.setTermText(token.getTermText().toLowerCase());
+				}
+			}
+			return true;
+		}
+		getStream().reset();
 		return false;
 	}
 

@@ -55,18 +55,20 @@ public class SymbolFilter extends TokenFilter {
 	 *            : The token string
 	 * @return The formatted string
 	 */
-	private String fiterHyphen(String input) {
+	private String filterHyphen(String input) {
 		String result = null;
-		String[] parts = input.split("-");
+		if (input.trim().length() > 1) {
+			String[] parts = input.split("-");
 
-		for (String part : parts) {
-			if (part.matches("^[0-9]+$")) {
-				result = input;
-				break;
+			for (String part : parts) {
+				if (part.matches("^[0-9]+$")) {
+					result = input;
+					break;
+				}
+				result = input.replaceAll("-", " ");
 			}
-			result = input.replaceAll("-", " ");
+			result = result.trim();
 		}
-		result = result.trim();
 		return result;
 	}
 
@@ -75,27 +77,34 @@ public class SymbolFilter extends TokenFilter {
 		Token token = null;
 		String text = null;
 
-		if (getStream().hasNext()) {
+		if (this.isChaining())
+			token = getStream().getCurrent();
+		if (token == null && getStream().hasNext()) {
 			token = getStream().next();
-			if (token != null) {
-				text = token.getTermText();
+		}
 
-				for (char symbol : RulesHelper.endOfLineSymbols) {
-					if (text.charAt(text.length() - 1) == symbol) {
-						text.replace("" + symbol, "");
-					}
-				}
+		if (token != null) {
+			text = token.getTermText().trim();
 
-				if (text.contains("'")) {
-					text = this.filterApostrophe(text);
+			for (char symbol : RulesHelper.endOfLineSymbols) {
+				if (text.charAt(text.length() - 1) == symbol) {
+					text = text.replace("" + symbol, "");
 				}
-
-				if (text.contains("-")) {
-					text = this.fiterHyphen(text);
-				}
-				token.setTermText(text);
-				return true;
 			}
+
+			if (text.contains("'")) {
+				text = this.filterApostrophe(text);
+			}
+
+			if (text.contains("-")) {
+				text = this.filterHyphen(text);
+			}
+
+			if (text == null)
+				getStream().remove();
+			else
+				token.setTermText(text);
+			return true;
 		}
 		return false;
 	}

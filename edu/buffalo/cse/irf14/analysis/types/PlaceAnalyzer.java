@@ -3,7 +3,8 @@
  */
 package edu.buffalo.cse.irf14.analysis.types;
 
-import edu.buffalo.cse.irf14.analysis.Analyzer;
+import edu.buffalo.cse.irf14.analysis.TokenFilter;
+import edu.buffalo.cse.irf14.analysis.TokenFilterType;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
 import edu.buffalo.cse.irf14.analysis.TokenizerException;
 
@@ -11,35 +12,32 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  * @author ketkiram
  * 
  */
-public class PlaceAnalyzer implements Analyzer {
+public class PlaceAnalyzer extends FieldAnalyzer {
 
 	/**
 	 * 
 	 */
-	public PlaceAnalyzer() {
-		// TODO Auto-generated constructor stub
+	public PlaceAnalyzer(TokenStream stream) {
+		super(stream);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#increment()
-	 */
 	@Override
 	public boolean increment() throws TokenizerException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+		TokenFilter symbolFilter = factory.getFilterByType(
+				TokenFilterType.SYMBOL, getStream());
+		TokenFilter accentFilter = factory.getFilterByType(
+				TokenFilterType.ACCENT, this.getStream());
+		TokenFilter specialCharFilter = factory.getFilterByType(
+				TokenFilterType.SPECIALCHARS, getStream());
+		TokenFilter capitalFilter = factory.getFilterByType(
+				TokenFilterType.CAPITALIZATION, this.getStream());
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#getStream()
-	 */
-	@Override
-	public TokenStream getStream() {
-		// TODO Auto-generated method stub
-		return null;
+		accentFilter.setChaining(true);
+		specialCharFilter.setChaining(true);
+		capitalFilter.setChaining(true);
+
+		return symbolFilter.increment() && accentFilter.increment()
+				&& specialCharFilter.increment() && capitalFilter.increment();
 	}
 
 }
