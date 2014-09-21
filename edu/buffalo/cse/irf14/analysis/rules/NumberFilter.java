@@ -38,14 +38,7 @@ public class NumberFilter extends TokenFilter {
 			token = getStream().next();
 		}
 		if (token != null) {
-			token.setTermText(token.getTermText().replaceAll(
-					"(\\s*\\d+),(\\d+)", ""));
-			token.setTermText(token.getTermText().replaceAll(
-					"(\\d.*?\\.\\d.*?)(%)", ""));
-			token.setTermText(token.getTermText().replaceAll(
-					"(\\d+)(\\/)(\\d+)", ""));
-			token.setTermText(token.getTermText().replaceAll("\\s*\\d+", ""));
-			if (token.getTermText().trim().isEmpty()) {
+			if (token.getTermText().matches("(\\d)*[\\/.,]?(\\d)*(%)*")) {
 				getStream().remove();
 			}
 			return true;

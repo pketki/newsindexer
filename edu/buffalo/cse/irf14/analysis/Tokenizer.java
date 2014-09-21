@@ -3,8 +3,8 @@
  */
 package edu.buffalo.cse.irf14.analysis;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * @author nikhillo Class that converts a given string into a
@@ -48,9 +48,9 @@ public class Tokenizer {
 	 */
 	public TokenStream consume(String str) throws TokenizerException {
 		final TokenStream tokenStream = new TokenStream();
-		final List<Token> tokenList = new ArrayList<Token>();
 
 		String[] tokenString = str.split(this.delimiter);
+		final List<Token> tokenList = new Vector<Token>(tokenString.length);
 		int tokenIndex = 0;
 
 		for (String tokenTerm : tokenString) {

@@ -3,9 +3,9 @@
  */
 package edu.buffalo.cse.irf14.analysis;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * @author nikhillo Class that represents a stream of Tokens. All
@@ -22,7 +22,7 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	public TokenStream() {
 		super();
-		this.setTokenList(new ArrayList<Token>());
+		this.setTokenList(new Vector<Token>());
 		this.position = -1;
 	}
 
@@ -51,6 +51,10 @@ public class TokenStream implements Iterator<Token> {
 		return null;
 	}
 
+	public boolean hasPrevious() {
+		return ((position - 1) >= 0);
+	}
+
 	public Token previous() {
 		return (position > 0 ? this.tokenList.get(position - 1) : null);
 	}
@@ -62,13 +66,11 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	@Override
 	public void remove() {
-		List<Token> tempList = new ArrayList<Token>();
-		for (int i = 0; i < this.tokenList.size(); i++) {
-			if (i != this.position)
-				tempList.add(this.tokenList.get(i));
+		// check we're not at the beginning of the token list
+		if (position >= 0) {
+			this.tokenList.remove(position);
+			position--;
 		}
-		this.tokenList = tempList;
-		this.position++;
 	}
 
 	/**

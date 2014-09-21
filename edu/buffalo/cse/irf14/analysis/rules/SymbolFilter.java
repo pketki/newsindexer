@@ -56,7 +56,7 @@ public class SymbolFilter extends TokenFilter {
 	 * @return The formatted string
 	 */
 	private String filterHyphen(String input) {
-		String result = null;
+		String result = "";
 		if (input.trim().length() > 1) {
 			String[] parts = input.split("-");
 
@@ -87,7 +87,8 @@ public class SymbolFilter extends TokenFilter {
 			text = token.getTermText().trim();
 
 			for (char symbol : RulesHelper.endOfLineSymbols) {
-				if (text.charAt(text.length() - 1) == symbol) {
+				if (text.length() == 1 || text.charAt(0) == symbol
+						|| text.charAt(text.length() - 1) == symbol) {
 					text = text.replace("" + symbol, "");
 				}
 			}
@@ -100,7 +101,7 @@ public class SymbolFilter extends TokenFilter {
 				text = this.filterHyphen(text);
 			}
 
-			if (text == null)
+			if (text.equals(""))
 				getStream().remove();
 			else
 				token.setTermText(text);

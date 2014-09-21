@@ -32,7 +32,6 @@ public class AccentFilter extends TokenFilter {
 					Normalizer.Form.NFD).replaceAll(
 					"\\p{InCombiningDiacriticalMarks}+", "");
 			token.setTermText(tokenString);
-			System.out.println(tokenString);
 			return true;
 		}
 		getStream().reset();
