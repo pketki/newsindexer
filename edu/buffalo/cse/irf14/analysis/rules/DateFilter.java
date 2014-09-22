@@ -21,7 +21,7 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
  */
 public class DateFilter extends TokenFilter {
 	private final Calendar calendar;
-	private boolean isFound;
+	private boolean isFound, isDate, isTime;
 
 	/**
 	 * @param stream
@@ -42,83 +42,184 @@ public class DateFilter extends TokenFilter {
 		if (getStream().hasNext()) {
 			Token token = getStream().next();
 			if (token != null) {
+
 				isFound = false;
-				// Pattern pattern = Pattern
-				// .compile("[(\\d)(\\s)]*\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*[(\\s)(\\d),]*(\\d{2,4})*");
-				// Matcher match = pattern.matcher(token.getTermText());
-				// if (match.find()) {
-				//
-				// }
-				if (token
-						.getTermText()
-						.matches(
-								"\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*")) {
+				String dateString = null;
+				Token tempToken = null;
+				if (token.getTermText().trim()
+						.matches("\\d{1,2}(st|th|nd|rd)?")) {
 					isFound = true;
-					// current token has month name
-					// check previous token for day, if found then check next
-					// token
-					// for year. Combine 3 token in one, pass it to simpleformat
-					// and
-					// get datestring
-					//
-					// if not found check next of month token for day. Check
-					// year
-					// token and repeat same steps as above
+					isDate = true;
+					dateString = token.getTermText().trim()
+							.replaceAll("(st|th|nd|rd)?", "");
+
+					if (getStream().hasNext()) {
+						tempToken = getStream().next();
+					}
+
+					if (tempToken != null
+							&& tempToken
+									.getTermText()
+									.trim()
+									.matches(
+											"\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*")) {
+						dateString = tempToken.getTermText().trim()
+								.replaceAll(",", "")
+								+ " " + dateString;
+					} else if (tempToken != null
+							&& tempToken.getTermText().matches(
+									"(am|AM|pm|PM){1}?")) {
+						isDate = false;
+						isFound = false;
+					} else
+						dateString = "January " + dateString;
 				}
-				if (!isFound && token.getTermText().matches("\\d{4}")) {
+
+				if (!isFound
+						&& token.getTermText()
+								.matches(
+										"\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*")) {
+
+					dateString = token.getTermText().trim().replaceAll(",", "");
 					isFound = true;
+					isDate = true;
+					if (getStream().hasNext()) {
+						tempToken = getStream().next();
+					}
+
+					if (tempToken != null
+							&& tempToken.getTermText().trim()
+									.matches("\\d{1,2}")) {
+						dateString += " " + tempToken.getTermText().trim();
+					} else
+						dateString += " 01";
+				}
+
+				if (isFound && isDate) {
+					if (tempToken != null
+							&& !tempToken.getTermText().trim()
+									.matches("\\d{4}")) {
+						if (getStream().hasNext()) {
+							tempToken = getStream().next();
+						}
+					}
+
+					if (tempToken != null
+							&& tempToken.getTermText().trim().matches("\\d{4}"))
+						dateString += " " + tempToken.getTermText().trim();
+					else
+						dateString += " 1900";
+
+					calendar.set(Calendar.ERA, GregorianCalendar.AD);
+					SimpleDateFormat dateFormat = new SimpleDateFormat(
+							"MMMM dd yyyy");
+					dateFormat.setCalendar(calendar);
+					Date date = null;
+					try {
+						date = dateFormat.parse(dateString);
+					} catch (ParseException e) {
+						// TODO to be handled
+						e.printStackTrace();
+					}
+					calendar.setTime(date);
+				}
+
+				if (!isFound && token.getTermText().trim().matches("\\d{4}")) {
+					isFound = true;
+					isDate = true;
 					calendar.set(Calendar.ERA, GregorianCalendar.AD);
 					calendar.set(Integer.parseInt(token.getTermText()), 1, 1,
 							0, 0, 0);
 				}
 				if (!isFound
-						&& token.getTermText().matches("\\d{1,4}(\\s)*(BC)")) {
+						&& token.getTermText().trim()
+								.matches("\\d{1,4}(\\s)*(BC)")) {
 					isFound = true;
+					isDate = true;
 					String year = token.getTermText().split("BC")[0].toString()
 							.trim();
 					calendar.set(Calendar.ERA, GregorianCalendar.BC);
-					calendar.set(Integer.parseInt(year), 1, 1, 0, 0, 0);
+					calendar.set(Integer.parseInt(year), 0, 1, 0, 0, 0);
 				}
-				if (isFound) {
+				if (isFound && isDate) {
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 							"yyyyMMdd");
-					String dateString = simpleDateFormat.format(calendar
-							.getTime());
+					dateString = simpleDateFormat.format(calendar.getTime());
 					token.setTermText(dateString);
+				}
+				if (!isFound
+						&& token.getTermText().trim()
+								.matches("\\d{4}[(-/)+]\\d{2}")) {
+					isFound = true;
+					isDate = true;
+					String delim = "-";
+					String[] yearSplit = token.getTermText().split("-");
+					if (yearSplit.length < 2) {
+						yearSplit = token.getTermText().split("/");
+						delim = "/";
+					}
+					calendar.set(Calendar.ERA, GregorianCalendar.AD);
+					calendar.set(Integer.parseInt(yearSplit[0]), 0, 1, 0, 0, 0);
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+							"yyyyMMdd");
+					dateString = simpleDateFormat.format(calendar.getTime())
+							+ delim;
+					calendar.set(Integer.parseInt(yearSplit[1]), 0, 1, 0, 0, 0);
+
+					token.setTermText(dateString
+							+ simpleDateFormat.format(calendar.getTime()));
 				}
 
 				String timeFormat = null;
+				String timeString = null;
+
 				if (!isFound
 						&& token.getTermText().matches(
 								"[0-9]+(am|AM|pm|PM){1}?")) {
 					isFound = true;
+					isTime = true;
 					timeFormat = "hha";
-				} else if (!isFound
+					timeString = token.getTermText();
+				}
+				if (!isFound
 						&& token.getTermText().matches(
 								"[0-9:]+(am|AM|pm|PM){1}?")) {
 					isFound = true;
+					isTime = true;
 					timeFormat = "hh:mma";
-				} else if (!isFound
-						&& token.getTermText().matches("(am|AM|pm|PM){1}?")) {
-					/**
-					 * replace token.getTermText() with previous token value
-					 */
-					if (!isFound
-							&& token.getTermText().matches("[0-9:]+(\\s)*")) {
-						isFound = true;
-						timeFormat = "hh:mm a";
-					} else if (!isFound
-							&& token.getTermText().matches("[0-9]+(\\s)*")) {
-						isFound = true;
-						timeFormat = "hh a";
+					timeString = token.getTermText();
+				}
+
+				if (!isFound && token.getTermText().matches("\\d+(:){1}\\d+")) {
+					isFound = true;
+					isTime = true;
+					timeFormat = "hh:mm a";
+				}
+				if (!isFound && token.getTermText().matches("[0-9]+")) {
+					isFound = true;
+					isTime = true;
+					timeFormat = "hh a";
+				}
+				if (isTime && timeString == null) {
+					if (getStream().hasNext()) {
+						tempToken = getStream().next();
+					}
+					if (tempToken != null
+							&& tempToken.getTermText().matches(
+									"(am|AM|pm|PM){1}?")) {
+						timeString = token.getTermText() + " "
+								+ tempToken.getTermText();
+					} else {
+						isFound = false;
 					}
 				}
 
-				if (isFound && timeFormat != null) {
+				if (isFound && isTime && timeFormat != null
+						&& timeString != null) {
 					Date date = null;
 					try {
-						date = new SimpleDateFormat(timeFormat).parse(token
-								.getTermText());
+						date = new SimpleDateFormat(timeFormat)
+								.parse(timeString);
 					} catch (ParseException e) {
 						throw new TokenizerException();
 					}
@@ -130,5 +231,4 @@ public class DateFilter extends TokenFilter {
 		}
 		return false;
 	}
-
 }
