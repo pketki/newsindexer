@@ -38,9 +38,19 @@ public class SymbolFilter extends TokenFilter {
 	private String filterApostrophe(String input) {
 		String result = RulesHelper.commonContractionsMap.get(input);
 
-		// if it is not a common contraction simply remove the apostrophe
-		if (result == null) {
-			result = input.replaceAll("'", "");
+		if (result != null) {
+			// check for case as map only has lowercase values
+			if (input.charAt(0) != '\'' && input.charAt(0) != result.charAt(0)) {
+				result = result.replaceFirst(String.valueOf(result.charAt(0)),
+						String.valueOf(input.charAt(0)));
+			}
+
+		} else {
+			// if it is not a common contraction remove apostrophe
+			// as per above rules
+			input = input.replaceAll("'s", "");
+			input = input.replaceAll("'", "");
+			result = input;
 		}
 		return result;
 	}
@@ -63,7 +73,7 @@ public class SymbolFilter extends TokenFilter {
 			String[] parts = input.split("-");
 
 			for (String part : parts) {
-				if (part.matches("^[0-9]+$")) {
+				if (part.matches("\\w*[0-9]+$")) {
 					result = input;
 					break;
 				}

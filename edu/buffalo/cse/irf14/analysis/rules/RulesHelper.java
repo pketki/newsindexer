@@ -4,8 +4,9 @@
 package edu.buffalo.cse.irf14.analysis.rules;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 /**
@@ -18,7 +19,8 @@ public final class RulesHelper {
 
 	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
 	public static Pattern numeric = Pattern.compile("\\d*[\\/.,\\-]?\\d*%*$");
-	public static HashMap<String, String> commonContractionsMap = new HashMap<String, String>();
+	public static Map<String, String> commonContractionsMap = new TreeMap<String, String>(
+			String.CASE_INSENSITIVE_ORDER);
 	public static List<String> stopWordsList = new ArrayList<String>();
 
 	static {
@@ -56,6 +58,7 @@ public final class RulesHelper {
 		commonContractionsMap.put("needn't", "need not");
 		commonContractionsMap.put("not've", "not have");
 		commonContractionsMap.put("o'clock", "of the clock");
+		commonContractionsMap.put("'em", "them");
 		commonContractionsMap.put("shan't", "shall not");
 		commonContractionsMap.put("she'd", "she would");
 		commonContractionsMap.put("she'll", "she will");
