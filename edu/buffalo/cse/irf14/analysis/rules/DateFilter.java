@@ -42,13 +42,13 @@ public class DateFilter extends TokenFilter {
 		if (getStream().hasNext()) {
 			Token token = getStream().next();
 			if (token != null) {
-
+				isDate = false;
+				isTime = false;
 				isFound = false;
 				String dateString = null;
 				Token tempToken = null;
 				if (token.getTermText().trim()
 						.matches("\\d{1,2}(st|th|nd|rd)?")) {
-					isFound = true;
 					isDate = true;
 					dateString = token.getTermText().trim()
 							.replaceAll("(st|th|nd|rd)?", "");
@@ -56,8 +56,16 @@ public class DateFilter extends TokenFilter {
 					if (getStream().hasNext()) {
 						tempToken = getStream().next();
 					}
-
 					if (tempToken != null
+							&& tempToken.getTermText().matches("(BC){1}")) {
+						isFound = true;
+						calendar.set(Calendar.ERA, GregorianCalendar.BC);
+						calendar.set(Integer.parseInt(token.getTermText()), 0,
+								1, 0, 0, 0);
+					}
+
+					if (!isFound
+							&& tempToken != null
 							&& tempToken
 									.getTermText()
 									.trim()
@@ -128,19 +136,19 @@ public class DateFilter extends TokenFilter {
 					isFound = true;
 					isDate = true;
 					calendar.set(Calendar.ERA, GregorianCalendar.AD);
-					calendar.set(Integer.parseInt(token.getTermText()), 1, 1,
+					calendar.set(Integer.parseInt(token.getTermText()), 0, 1,
 							0, 0, 0);
 				}
-				if (!isFound
-						&& token.getTermText().trim()
-								.matches("\\d{1,4}(\\s)*(BC)")) {
-					isFound = true;
-					isDate = true;
-					String year = token.getTermText().split("BC")[0].toString()
-							.trim();
-					calendar.set(Calendar.ERA, GregorianCalendar.BC);
-					calendar.set(Integer.parseInt(year), 0, 1, 0, 0, 0);
-				}
+				// if (!isFound
+				// && token.getTermText().trim()
+				// .matches("\\d{1,4}(\\s)*(BC)")) {
+				// isFound = true;
+				// isDate = true;
+				// String year = token.getTermText().split("BC")[0].toString()
+				// .trim();
+				// calendar.set(Calendar.ERA, GregorianCalendar.BC);
+				// calendar.set(Integer.parseInt(year), 0, 1, 0, 0, 0);
+				// }
 				if (isFound && isDate) {
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 							"yyyyMMdd");
@@ -149,7 +157,7 @@ public class DateFilter extends TokenFilter {
 				}
 				if (!isFound
 						&& token.getTermText().trim()
-								.matches("\\d{4}[(-/)+]\\d{2}")) {
+								.matches("\\d{4}[(-\\/)+]\\d{2}")) {
 					isFound = true;
 					isDate = true;
 					String delim = "-";

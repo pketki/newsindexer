@@ -17,6 +17,7 @@ public class TokenStream implements Iterator<Token> {
 	private List<Token> tokenList;
 	private int position;
 	private int size;
+	private int savePointer;
 
 	/**
 	 * 
@@ -139,6 +140,14 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	public int getSize() {
 		return size;
+	}
+
+	public void savePoint() {
+		savePointer = position;
+	}
+
+	public void rollBack() {
+		position = savePointer;
 	}
 
 	@Override

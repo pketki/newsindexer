@@ -100,10 +100,11 @@ public class Token {
 	 * @param tokens
 	 *            The token array to be merged
 	 */
-	protected void merge(Token... tokens) {
+	public void merge(Token... tokens) {
 		StringBuilder mergedText = new StringBuilder();
 		for (Token t : tokens) {
 			mergedText.append(" " + t.termText);
+			t = null;
 		}
 		this.setTermText(mergedText.toString().trim());
 	}

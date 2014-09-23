@@ -3,16 +3,13 @@
  */
 package edu.buffalo.cse.irf14.analysis.rules;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import edu.buffalo.cse.irf14.analysis.Token;
 import edu.buffalo.cse.irf14.analysis.TokenFilter;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
 import edu.buffalo.cse.irf14.analysis.TokenizerException;
 
 /**
- * @author jlimaye
+ * @author ketkiram
  * 
  */
 public class SpecialCharsFilter extends TokenFilter {
@@ -25,11 +22,6 @@ public class SpecialCharsFilter extends TokenFilter {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#increment()
-	 */
 	@Override
 	public boolean increment() throws TokenizerException {
 		Token token = null;
@@ -41,12 +33,12 @@ public class SpecialCharsFilter extends TokenFilter {
 		}
 
 		if (token != null) {
-			Pattern pattern = Pattern.compile("[^a-zA-Z0-9.-]");
-			Matcher match = pattern.matcher(token.getTermText());
-			if (match.find()) {
-				token.setTermText(token.getTermText().replaceAll(
-						"[^a-zA-Z0-9.-]", ""));
-			}
+			/*
+			 * Pattern pattern = Pattern.compile("[^a-zA-Z0-9.\\-]"); Matcher
+			 * match = pattern.matcher(token.getTermText()); if (match.find()) {
+			 * token.setTermText(token.getTermText().replaceAll(
+			 * "[^a-zA-Z0-9.\\-]", "")); }
+			 */
 			if (token.getTermText().trim().isEmpty()) {
 				getStream().remove();
 			}

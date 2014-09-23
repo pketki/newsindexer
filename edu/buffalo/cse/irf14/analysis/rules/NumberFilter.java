@@ -11,7 +11,7 @@ import edu.buffalo.cse.irf14.analysis.TokenStream;
 import edu.buffalo.cse.irf14.analysis.TokenizerException;
 
 /**
- * @author jlimaye
+ * @author ketkiram
  * 
  */
 public class NumberFilter extends TokenFilter {
@@ -24,11 +24,6 @@ public class NumberFilter extends TokenFilter {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see edu.buffalo.cse.irf14.analysis.Analyzer#increment()
-	 */
 	@Override
 	public boolean increment() throws TokenizerException {
 
