@@ -29,7 +29,6 @@ public class DateFilter extends TokenFilter {
 	public DateFilter(TokenStream stream) {
 		super(stream);
 		calendar = new GregorianCalendar();
-		isFound = false;
 	}
 
 	/*
@@ -45,6 +44,7 @@ public class DateFilter extends TokenFilter {
 				isDate = false;
 				isTime = false;
 				isFound = false;
+				String addChars = "";
 				String dateString = null;
 				Token tempToken = null;
 				if (token.getTermText().trim()
@@ -53,15 +53,21 @@ public class DateFilter extends TokenFilter {
 					dateString = token.getTermText().trim()
 							.replaceAll("(st|th|nd|rd)?", "");
 
-					if (getStream().hasNext()) {
-						tempToken = getStream().next();
-					}
+					tempToken = getStream().next();
+
 					if (tempToken != null
 							&& tempToken.getTermText().matches("(BC){1}")) {
 						isFound = true;
 						calendar.set(Calendar.ERA, GregorianCalendar.BC);
 						calendar.set(Integer.parseInt(token.getTermText()), 0,
 								1, 0, 0, 0);
+						SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+								"yyyyMMdd");
+						dateString = simpleDateFormat
+								.format(calendar.getTime());
+						getStream().remove();
+						token.setTermText("-" + dateString);
+						return true;
 					}
 
 					if (!isFound
@@ -71,14 +77,15 @@ public class DateFilter extends TokenFilter {
 									.trim()
 									.matches(
 											"\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*")) {
+						isFound = true;
 						dateString = tempToken.getTermText().trim()
 								.replaceAll(",", "")
 								+ " " + dateString;
+						getStream().remove();
 					} else if (tempToken != null
 							&& tempToken.getTermText().matches(
 									"(am|AM|pm|PM){1}?")) {
 						isDate = false;
-						isFound = false;
 					} else
 						dateString = "January " + dateString;
 				}
@@ -91,14 +98,16 @@ public class DateFilter extends TokenFilter {
 					dateString = token.getTermText().trim().replaceAll(",", "");
 					isFound = true;
 					isDate = true;
-					if (getStream().hasNext()) {
-						tempToken = getStream().next();
-					}
+
+					tempToken = getStream().next();
 
 					if (tempToken != null
 							&& tempToken.getTermText().trim()
-									.matches("\\d{1,2}")) {
-						dateString += " " + tempToken.getTermText().trim();
+									.matches("\\d{1,2}(st|th|nd|rd|,)?")) {
+						dateString += " "
+								+ tempToken.getTermText().trim()
+										.replaceAll("(st|th|nd|rd|,)?", "");
+						getStream().remove();
 					} else
 						dateString += " 01";
 				}
@@ -107,15 +116,19 @@ public class DateFilter extends TokenFilter {
 					if (tempToken != null
 							&& !tempToken.getTermText().trim()
 									.matches("\\d{4}")) {
-						if (getStream().hasNext()) {
-							tempToken = getStream().next();
-						}
+
+						tempToken = getStream().next();
+
 					}
 
 					if (tempToken != null
-							&& tempToken.getTermText().trim().matches("\\d{4}"))
-						dateString += " " + tempToken.getTermText().trim();
-					else
+							&& tempToken.getTermText().trim()
+									.matches("\\d{4}[\\/.,\\-]?")) {
+						dateString += " "
+								+ tempToken.getTermText().substring(0, 4);
+						addChars = tempToken.getTermText().substring(4);
+						getStream().remove();
+					} else
 						dateString += " 1900";
 
 					calendar.set(Calendar.ERA, GregorianCalendar.AD);
@@ -139,21 +152,12 @@ public class DateFilter extends TokenFilter {
 					calendar.set(Integer.parseInt(token.getTermText()), 0, 1,
 							0, 0, 0);
 				}
-				// if (!isFound
-				// && token.getTermText().trim()
-				// .matches("\\d{1,4}(\\s)*(BC)")) {
-				// isFound = true;
-				// isDate = true;
-				// String year = token.getTermText().split("BC")[0].toString()
-				// .trim();
-				// calendar.set(Calendar.ERA, GregorianCalendar.BC);
-				// calendar.set(Integer.parseInt(year), 0, 1, 0, 0, 0);
-				// }
+
 				if (isFound && isDate) {
 					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 							"yyyyMMdd");
 					dateString = simpleDateFormat.format(calendar.getTime());
-					token.setTermText(dateString);
+					token.setTermText(dateString + addChars);
 				}
 				if (!isFound
 						&& token.getTermText().trim()
@@ -209,14 +213,16 @@ public class DateFilter extends TokenFilter {
 					timeFormat = "hh a";
 				}
 				if (isTime && timeString == null) {
-					if (getStream().hasNext()) {
-						tempToken = getStream().next();
-					}
+
+					tempToken = getStream().next();
+
 					if (tempToken != null
 							&& tempToken.getTermText().matches(
-									"(am|AM|pm|PM){1}?")) {
+									"(am|AM|pm|PM){1}?[\\/.,\\-]?")) {
 						timeString = token.getTermText() + " "
-								+ tempToken.getTermText();
+								+ tempToken.getTermText().substring(0, 2);
+						addChars = tempToken.getTermText().substring(2);
+						getStream().remove();
 					} else {
 						isFound = false;
 					}
@@ -232,7 +238,7 @@ public class DateFilter extends TokenFilter {
 						throw new TokenizerException();
 					}
 					DateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-					token.setTermText(sdf.format(date));
+					token.setTermText(sdf.format(date) + addChars);
 				}
 				return true;
 			}

@@ -40,7 +40,7 @@ public class NumberFilter extends TokenFilter {
 			Matcher symbolMatcher = RulesHelper.numeric.matcher(text);
 			while (symbolMatcher.find()) {
 				text = text.replace(symbolMatcher.group(0), symbolMatcher
-						.group(0).replaceAll("\\d+[.,\\-]?\\d+", ""));
+						.group(0).replaceAll("[\\d*[\\/.,\\-]?]*", ""));
 			}
 
 			if (text.isEmpty())
