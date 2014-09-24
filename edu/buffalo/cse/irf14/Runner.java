@@ -31,9 +31,9 @@ public class Runner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String ipDir = "D:/MS at UB/Semester 1/IR/news_training/training";
+		// String ipDir = "D:/MS at UB/Semester 1/IR/news_training/training";
 		// args[0];
-		// String ipDir = "C:/KettWorkspace/inputfile";
+		String ipDir = "C:/KettWorkspace/inputfile";
 		// String indexDir = args[1];
 		// more? idk!
 

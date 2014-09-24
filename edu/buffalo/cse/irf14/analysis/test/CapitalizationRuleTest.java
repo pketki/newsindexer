@@ -3,7 +3,8 @@
  */
 package edu.buffalo.cse.irf14.analysis.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -18,24 +19,28 @@ public class CapitalizationRuleTest extends TFRuleBaseTest {
 
 	@Test
 	public void testRule() {
-			try {
-					assertArrayEquals(new String[] { "this", "is", "a", "test." },
-							runTest(TokenFilterType.CAPITALIZATION, "This is a test."));
-					assertArrayEquals(new String[] {"the", "city", "San Francisco", "is",
-							"in", "California." },
-							runTest(TokenFilterType.CAPITALIZATION, "The city San Francisco is in California."));
-					assertArrayEquals(
-							new String[] {"some", "bodily", "fluids,", "such",
-									"as", "saliva", "and", "tears,", "do", "not",
-									"transmit", "HIV" },
-							runTest(TokenFilterType.CAPITALIZATION, "Some bodily fluids, such as saliva and tears, do not transmit HIV"));
-					assertArrayEquals(
-							new String[] { "it", "runs", "Apple's", "iOS",
-									"mobile", "operating", "system," },
-							runTest(TokenFilterType.CAPITALIZATION, "It runs Apple's iOS mobile operating system,"));
-			} catch (TokenizerException e) {
-				fail("Exception thrown when not expected!");
-			}
+		try {
+			assertArrayEquals(new String[] { "this", "is", "a", "test." },
+					runTest(TokenFilterType.CAPITALIZATION, "This is a test."));
+			assertArrayEquals(
+					new String[] { "the", "city", "San Francisco", "is", "in",
+							"California." },
+					runTest(TokenFilterType.CAPITALIZATION,
+							"The city San Francisco is in California."));
+			assertArrayEquals(
+					new String[] { "some", "bodily", "fluids,", "such", "as",
+							"saliva", "and", "tears,", "do", "not", "transmit",
+							"HIV" },
+					runTest(TokenFilterType.CAPITALIZATION,
+							"Some bodily fluids, such as saliva and tears, do not transmit HIV"));
+			assertArrayEquals(
+					new String[] { "it", "runs", "Apple's", "iOS", "mobile",
+							"operating", "system," },
+					runTest(TokenFilterType.CAPITALIZATION,
+							"It runs Apple's iOS mobile operating system,"));
+		} catch (TokenizerException e) {
+			fail("Exception thrown when not expected!");
+		}
 	}
 
 }

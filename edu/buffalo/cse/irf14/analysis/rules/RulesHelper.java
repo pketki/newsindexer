@@ -19,6 +19,8 @@ public final class RulesHelper {
 
 	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
 	public static Pattern numeric = Pattern.compile("\\d*[\\/.,\\-]?\\d*%*$");
+	public static Pattern camelCase = Pattern
+			.compile("([a-z]*[A-Z]+[a-z]+)+|([a-z]+[A-Z]+[a-z]*)+");
 	public static Map<String, String> commonContractionsMap = new TreeMap<String, String>(
 			String.CASE_INSENSITIVE_ORDER);
 	public static List<String> stopWordsList = new ArrayList<String>();
@@ -225,5 +227,34 @@ public final class RulesHelper {
 		stopWordsList.add("yet");
 		stopWordsList.add("you");
 		stopWordsList.add("your");
+	}
+
+	/**
+	 * Method to handle hyphens in the token string as per following rules: 1.
+	 * If a hyphen occurs within a alphanumeric token it should be retained
+	 * (e.g. B-52, at least one of the two constituents must have a number). 2.
+	 * If both are alphabetic, it should be replaced with a whitespace and
+	 * retained as a single token (week-day => week day). 3. Any other hyphens
+	 * padded by spaces on either or both sides should be removed.
+	 * 
+	 * @param input
+	 *            : The token string
+	 * @return The formatted string
+	 */
+	public static String filterHyphen(String input) {
+		String result = "";
+		if (input.trim().length() > 1) {
+			String[] parts = input.split("-");
+
+			for (String part : parts) {
+				if (part.matches("\\w*[0-9]+$")) {
+					result = input;
+					break;
+				}
+				result = input.replaceAll("-", "");
+			}
+			result = result.trim();
+		}
+		return result;
 	}
 }

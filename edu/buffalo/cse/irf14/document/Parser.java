@@ -22,6 +22,9 @@ public class Parser {
 	 *             In case any error occurs during parsing
 	 */
 	public static Document parse(String filename) throws ParserException {
+		if (filename == null || filename.isEmpty()
+				|| !filename.matches("[\\\\_:.A-Za-z0-9\\s-]+$"))
+			throw new ParserException();
 
 		final Document document = new Document();
 
@@ -53,9 +56,9 @@ public class Parser {
 						reader.findInLine("by|By|BY");
 						String[] authorInfo = reader.nextLine().split(
 								",|</AUTHOR>");
-						authorName = authorInfo[0];
+						authorName = authorInfo[0].trim();
 						if (authorInfo.length > 1) {
-							authorOrg = authorInfo[1];
+							authorOrg = authorInfo[1].trim();
 						}
 						document.setField(FieldNames.AUTHOR, authorName);
 						document.setField(FieldNames.AUTHORORG, authorOrg);
@@ -65,14 +68,21 @@ public class Parser {
 					while (!reader.hasNext(month) && reader.hasNext()) {
 						place.append(reader.next() + " ");
 					}
+					String placeString = place.toString().trim();
+
 					// if a file is unformatted and has no date put everything
 					// in content
 					if (!reader.hasNext()) {
-						document.setField(FieldNames.CONTENT, place.toString()
-								.trim());
+						document.setField(FieldNames.CONTENT, placeString);
 						break;
 					}
-					document.setField(FieldNames.PLACE, place.toString());
+
+					// remove ending commas
+					if (placeString.lastIndexOf(",") == placeString.length() - 1) {
+						placeString = placeString.substring(0,
+								placeString.length() - 1);
+					}
+					document.setField(FieldNames.PLACE, placeString);
 
 					String dt = reader.next() + " " + reader.next();
 					document.setField(FieldNames.NEWSDATE, dt);
@@ -81,7 +91,7 @@ public class Parser {
 					content.append(line + " ");
 				}
 			}
-			document.setField(FieldNames.CONTENT, content.toString());
+			document.setField(FieldNames.CONTENT, content.toString().trim());
 			reader.close();
 
 		} catch (FileNotFoundException e) {

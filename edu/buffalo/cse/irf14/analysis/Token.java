@@ -19,7 +19,8 @@ public class Token {
 
 	private int termPosition;
 
-	private boolean isSpecial;
+	private boolean special;
+	private boolean allCaps;
 
 	/**
 	 * @param termText
@@ -91,6 +92,36 @@ public class Token {
 	}
 
 	/**
+	 * @return the special
+	 */
+	public boolean isSpecial() {
+		return special;
+	}
+
+	/**
+	 * @param special
+	 *            the special to set
+	 */
+	public void setSpecial(boolean special) {
+		this.special = special;
+	}
+
+	/**
+	 * @return the allCaps
+	 */
+	public boolean isAllCaps() {
+		return allCaps;
+	}
+
+	/**
+	 * @param allCaps
+	 *            the allCaps to set
+	 */
+	public void setAllCaps(boolean allCaps) {
+		this.allCaps = allCaps;
+	}
+
+	/**
 	 * Method to merge this token with the given array of Tokens You are free to
 	 * update termText and termBuffer as you please based upon your Token
 	 * implementation. But the toString() method below must return whitespace
@@ -101,10 +132,9 @@ public class Token {
 	 *            The token array to be merged
 	 */
 	public void merge(Token... tokens) {
-		StringBuilder mergedText = new StringBuilder();
+		StringBuilder mergedText = new StringBuilder(this.termText);
 		for (Token t : tokens) {
-			mergedText.append(" " + t.termText);
-			t = null;
+			mergedText.append(" " + t.getTermText());
 		}
 		this.setTermText(mergedText.toString().trim());
 	}
@@ -122,7 +152,7 @@ public class Token {
 	 */
 	@Override
 	public String toString() {
-		String retval = (this.isSpecial ? null : this.termText);
+		String retval = (isSpecial() ? null : this.termText);
 		return retval;
 	}
 }

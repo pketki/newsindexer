@@ -25,6 +25,7 @@ public class SpecialCharsFilter extends TokenFilter {
 	@Override
 	public boolean increment() throws TokenizerException {
 		Token token = null;
+		String text = null;
 
 		if (this.isChaining())
 			token = getStream().getCurrent();
@@ -33,15 +34,17 @@ public class SpecialCharsFilter extends TokenFilter {
 		}
 
 		if (token != null) {
-			/*
-			 * Pattern pattern = Pattern.compile("[^a-zA-Z0-9.\\-]"); Matcher
-			 * match = pattern.matcher(token.getTermText()); if (match.find()) {
-			 * token.setTermText(token.getTermText().replaceAll(
-			 * "[^a-zA-Z0-9.\\-]", "")); }
-			 */
-			if (token.getTermText().trim().isEmpty()) {
-				getStream().remove();
+			text = token.getTermText();
+			text = text.replaceAll("[$&+,:;=@#|<>^*()%~{}_/\\\\]", "");
+
+			if (text.contains("-")) {
+				text = RulesHelper.filterHyphen(text);
 			}
+
+			if (text.equals(""))
+				getStream().remove();
+			else
+				token.setTermText(text);
 			return true;
 		}
 
