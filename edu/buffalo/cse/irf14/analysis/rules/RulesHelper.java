@@ -19,12 +19,11 @@ public final class RulesHelper {
 
 	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
 
-	// public static Pattern numeric =
-	// Pattern.compile("\\d*[\\/.,\\-]?\\d*%*$");
+	public static Pattern numeric = Pattern.compile("\\d*[\\/.,\\-]?\\d*%*$");
 	public static Pattern camelCase = Pattern
 			.compile("([a-z]*[A-Z]+[a-z]+)+|([a-z]+[A-Z]+[a-z]*)+");
 
-	public static Pattern numeric = Pattern.compile("[\\d*[\\/.,\\-]?]*%*$");
+	// public static Pattern numeric = Pattern.compile("[\\d*[\\/.,\\-]?]*%*$");
 	public static Map<String, String> commonContractionsMap = new TreeMap<String, String>(
 			String.CASE_INSENSITIVE_ORDER);
 	public static List<String> stopWordsList = new ArrayList<String>();
