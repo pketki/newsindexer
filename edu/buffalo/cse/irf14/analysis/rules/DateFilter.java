@@ -47,6 +47,19 @@ public class DateFilter extends TokenFilter {
 				String addChars = "";
 				String dateString = null;
 				Token tempToken = null;
+				if (token.getTermText().trim().matches("\\d+(BC){1}")) {
+					isFound = true;
+					calendar.set(Calendar.ERA, GregorianCalendar.BC);
+					calendar.set(
+							Integer.parseInt(token.getTermText().replace("BC",
+									"")), 0, 1, 0, 0, 0);
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+							"yyyyMMdd");
+					dateString = simpleDateFormat.format(calendar.getTime());
+					getStream().remove();
+					token.setTermText("-" + dateString);
+					return true;
+				}
 				if (token.getTermText().trim()
 						.matches("\\d{1,2}(st|th|nd|rd)?")) {
 					isDate = true;
