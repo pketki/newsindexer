@@ -222,7 +222,7 @@ public class DateFilter extends TokenFilter {
 
 				if (!isFound
 						&& token.getTermText().matches(
-								"[0-9]+(am|AM|pm|PM){1}?")) {
+								"[0-9]+(am|AM|pm|PM){1}[\\/.,\\-]?")) {
 					isFound = true;
 					isTime = true;
 					timeFormat = "hha";
@@ -230,11 +230,14 @@ public class DateFilter extends TokenFilter {
 				}
 				if (!isFound
 						&& token.getTermText().matches(
-								"[0-9:]+(am|AM|pm|PM){1}?")) {
+								"[0-9:]+(am|AM|pm|PM){1}[\\/.,\\-]?")) {
 					isFound = true;
 					isTime = true;
 					timeFormat = "hh:mma";
-					timeString = token.getTermText();
+					String[] timeSplit = token.getTermText().split(":");
+					addChars = timeSplit[1].substring(4);
+					timeString = timeSplit[0] + ":"
+							+ timeSplit[1].substring(0, 4);
 				}
 
 				if (!isFound && token.getTermText().matches("\\d+(:){1}\\d+")) {
@@ -275,7 +278,7 @@ public class DateFilter extends TokenFilter {
 					} catch (ParseException e) {
 						throw new TokenizerException();
 					}
-					DateFormat sdf = new SimpleDateFormat("hh:mm:ss");
+					DateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 					token.setTermText(sdf.format(date) + addChars);
 				}
 				return true;
