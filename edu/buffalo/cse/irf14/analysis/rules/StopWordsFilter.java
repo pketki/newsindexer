@@ -32,7 +32,8 @@ public class StopWordsFilter extends TokenFilter {
 		}
 
 		if (token != null) {
-			if (RulesHelper.stopWordsList.contains(token.getTermText())) {
+			if (RulesHelper.stopWordsList.contains(token.getTermText()
+					.toLowerCase())) {
 				getStream().remove();
 			}
 			return true;

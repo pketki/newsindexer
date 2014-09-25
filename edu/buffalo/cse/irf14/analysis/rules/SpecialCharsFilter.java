@@ -35,7 +35,7 @@ public class SpecialCharsFilter extends TokenFilter {
 
 		if (token != null) {
 			text = token.getTermText();
-			text = text.replaceAll("[$&+,:;=@#|<>^*()%~{}_/\\\\]", "");
+			text = text.replaceAll("[\"$&+,:;=@#|<>^*()%~{}_/\\\\]", "");
 
 			if (text.contains("-")) {
 				text = RulesHelper.filterHyphen(text);

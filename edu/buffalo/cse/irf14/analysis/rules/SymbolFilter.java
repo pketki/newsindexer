@@ -69,10 +69,13 @@ public class SymbolFilter extends TokenFilter {
 		if (token != null) {
 			text = token.getTermText();
 
+			String punctuationRegex = "[.!\\?]+";
+			if (text.matches(punctuationRegex))
+				text = "";
 			Matcher symbolMatcher = RulesHelper.endOfLineSymbols.matcher(text);
 			while (symbolMatcher.find()) {
 				text = text.replace(symbolMatcher.group(0), symbolMatcher
-						.group(0).replaceAll("[.!\\?]", ""));
+						.group(0).replaceAll(punctuationRegex, ""));
 			}
 
 			if (text.contains("'")) {

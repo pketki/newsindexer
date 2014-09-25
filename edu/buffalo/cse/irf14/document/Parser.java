@@ -78,7 +78,9 @@ public class Parser {
 					}
 
 					// remove ending commas
-					if (placeString.lastIndexOf(",") == placeString.length() - 1) {
+					if (!placeString.isEmpty()
+							&& placeString.lastIndexOf(",") == placeString
+									.length() - 1) {
 						placeString = placeString.substring(0,
 								placeString.length() - 1);
 					}
@@ -90,8 +92,8 @@ public class Parser {
 				} else {
 					content.append(line + " ");
 				}
+				document.setField(FieldNames.CONTENT, content.toString().trim());
 			}
-			document.setField(FieldNames.CONTENT, content.toString().trim());
 			reader.close();
 
 		} catch (FileNotFoundException e) {
