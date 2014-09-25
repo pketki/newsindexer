@@ -254,7 +254,7 @@ public final class RulesHelper {
 					result = input;
 					break;
 				}
-				result = input.replaceAll("-", "");
+				result = input.replaceAll("-", " ");
 			}
 			result = result.trim();
 		}
