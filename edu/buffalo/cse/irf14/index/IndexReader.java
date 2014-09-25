@@ -11,6 +11,9 @@ import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import edu.buffalo.cse.irf14.analysis.rules.IndexHelper;
 
 /**
  * @author nikhillo Class that emulates reading data back from a written index
@@ -20,7 +23,7 @@ public class IndexReader {
 	private final IndexType type;
 	private FileInputStream fileInputStream;
 	private ObjectInputStream objectInputStream;
-	Map<String, Integer> termsMap;
+	private Map<String, Map<String, Integer>> postingsMap;
 
 	/**
 	 * Default constructor
@@ -33,20 +36,29 @@ public class IndexReader {
 	 * @param type
 	 *            The {@link IndexType} to read from
 	 */
+	@SuppressWarnings("unchecked")
 	public IndexReader(String indexDir, IndexType type) {
 		this.indexDir = indexDir;
 		this.type = type;
 		try {
-			File fileDir = new File(indexDir);
+			// File fileDir = new File(indexDir);
+			File fileDir = new File("D:\\test");
 			File[] fileList = fileDir.listFiles();
 			for (int i = 0; i < fileList.length; i++) {
-				fileInputStream = new FileInputStream(fileList[i]);
-				if (fileInputStream != null) {
-					objectInputStream = new ObjectInputStream(fileInputStream);
-					termsMap = new HashMap<String, Integer>();
-					termsMap.putAll((Map<String, Integer>) objectInputStream
-							.readObject());
+				// if (fileList[i].getName().equals("termPostings.ser")) {
+				if (IndexHelper.postingsMapping.get(IndexType.TERM).equals(
+						fileList[i].getName())) {
+					fileInputStream = new FileInputStream(fileList[i]);
+					if (fileInputStream != null) {
+						objectInputStream = new ObjectInputStream(
+								fileInputStream);
+						postingsMap = new HashMap<String, Map<String, Integer>>();
+						postingsMap
+								.putAll((Map<String, Map<String, Integer>>) objectInputStream
+										.readObject());
+					}
 				}
+
 			}
 
 		} catch (FileNotFoundException e) {
@@ -61,6 +73,10 @@ public class IndexReader {
 		}
 	}
 
+	private Map<String, Map<String, Integer>> getTermPostings() {
+		return this.postingsMap;
+	}
+
 	/**
 	 * Get total number of terms from the "key" dictionary associated with this
 	 * index. A postings list is always created against the "key" dictionary
@@ -69,7 +85,7 @@ public class IndexReader {
 	 */
 	public int getTotalKeyTerms() {
 		// TODO : YOU MUST IMPLEMENT THIS
-		return -1;
+		return getTermPostings().size();
 	}
 
 	/**
@@ -79,8 +95,12 @@ public class IndexReader {
 	 * @return The total number of terms
 	 */
 	public int getTotalValueTerms() {
-		// TODO: YOU MUST IMPLEMENT THIS
-		return -1;
+		int count = 0;
+		for (Entry<String, Map<String, Integer>> entry : getTermPostings()
+				.entrySet()) {
+			count += entry.getValue().size();
+		}
+		return count;
 	}
 
 	/**
@@ -95,8 +115,7 @@ public class IndexReader {
 	 *         otherwise.
 	 */
 	public Map<String, Integer> getPostings(String term) {
-
-		return null;
+		return getTermPostings().get(term);
 	}
 
 	/**

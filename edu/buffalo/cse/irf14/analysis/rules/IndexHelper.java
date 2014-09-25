@@ -4,10 +4,13 @@
 package edu.buffalo.cse.irf14.analysis.rules;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+
+import edu.buffalo.cse.irf14.index.IndexType;
 
 /**
  * @author ketkiram
@@ -15,7 +18,7 @@ import java.util.regex.Pattern;
  *         Helper class to store static data used by different filters based on
  *         different rules applied.
  */
-public final class RulesHelper {
+public final class IndexHelper {
 
 	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
 
@@ -27,6 +30,15 @@ public final class RulesHelper {
 	public static Map<String, String> commonContractionsMap = new TreeMap<String, String>(
 			String.CASE_INSENSITIVE_ORDER);
 	public static List<String> stopWordsList = new ArrayList<String>();
+
+	public static Map<IndexType, String> postingsMapping = new HashMap<IndexType, String>();
+
+	static {
+		postingsMapping.put(IndexType.AUTHOR, "authorPostings.ser");
+		postingsMapping.put(IndexType.CATEGORY, "categoryPostings.ser");
+		postingsMapping.put(IndexType.PLACE, "placePostings.ser");
+		postingsMapping.put(IndexType.TERM, "termPostings.ser");
+	}
 
 	static {
 		commonContractionsMap.put("ain't", "am not");

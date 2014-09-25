@@ -8,6 +8,8 @@ import java.io.File;
 import edu.buffalo.cse.irf14.document.Document;
 import edu.buffalo.cse.irf14.document.Parser;
 import edu.buffalo.cse.irf14.document.ParserException;
+import edu.buffalo.cse.irf14.index.IndexReader;
+import edu.buffalo.cse.irf14.index.IndexType;
 import edu.buffalo.cse.irf14.index.IndexWriter;
 
 /**
@@ -27,10 +29,11 @@ public class Runner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String ipDir = "D:/MS at UB/Semester 1/IR/news_training/training";
+		String ipDir = "C:\\Users\\Dell\\Downloads\\news_training\\training";
 		// args[0];
 		// String ipDir = "C:/KettWorkspace/inputfile";
-		String indexDir = "C:\\KettWorkspace\\serializedfiles";// args[1];
+		// String indexDir = "C:\\KettWorkspace\\serializedfiles";// args[1];
+		String indexDir = "D:\\test";// args[1];
 		// more? idk!
 
 		File ipDirectory = new File(ipDir);
@@ -68,6 +71,9 @@ public class Runner {
 			}
 
 			writer.close();
+
+			IndexReader reader = new IndexReader(indexDir, IndexType.TERM);
+			// reader.getPostings("San Francisco");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

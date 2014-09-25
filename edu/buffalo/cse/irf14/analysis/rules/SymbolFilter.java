@@ -26,9 +26,9 @@ public class SymbolFilter extends TokenFilter {
 
 	/**
 	 * Method to handle apostrophes in the token string as per following rules:
-	 * 1. Any possessive apostrophes should be removed (‘s s’ or just ‘ at the
+	 * 1. Any possessive apostrophes should be removed (ï¿½s sï¿½ or just ï¿½ at the
 	 * end of a word). 2. Common contractions should be replaced with expanded
-	 * forms but treated as one token. (e.g. should’ve => should have). 3. All
+	 * forms but treated as one token. (e.g. shouldï¿½ve => should have). 3. All
 	 * other apostrophes should be removed.
 	 * 
 	 * @param input
@@ -36,7 +36,7 @@ public class SymbolFilter extends TokenFilter {
 	 * @return The formatted string with no apostrophe
 	 */
 	private String filterApostrophe(String input) {
-		String result = RulesHelper.commonContractionsMap.get(input);
+		String result = IndexHelper.commonContractionsMap.get(input);
 
 		if (result != null) {
 			// check for case as map only has lowercase values
@@ -72,7 +72,7 @@ public class SymbolFilter extends TokenFilter {
 			String punctuationRegex = "[.!\\?]+";
 			if (text.matches(punctuationRegex))
 				text = "";
-			Matcher symbolMatcher = RulesHelper.endOfLineSymbols.matcher(text);
+			Matcher symbolMatcher = IndexHelper.endOfLineSymbols.matcher(text);
 			while (symbolMatcher.find()) {
 				text = text.replace(symbolMatcher.group(0), symbolMatcher
 						.group(0).replaceAll(punctuationRegex, ""));
@@ -83,7 +83,7 @@ public class SymbolFilter extends TokenFilter {
 			}
 
 			if (text.contains("-")) {
-				text = RulesHelper.filterHyphen(text);
+				text = IndexHelper.filterHyphen(text);
 			}
 
 			if (text.isEmpty())

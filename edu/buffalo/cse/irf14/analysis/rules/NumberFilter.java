@@ -37,7 +37,7 @@ public class NumberFilter extends TokenFilter {
 		}
 		if (token != null) {
 			text = token.getTermText();
-			Matcher symbolMatcher = RulesHelper.numeric.matcher(text);
+			Matcher symbolMatcher = IndexHelper.numeric.matcher(text);
 			while (symbolMatcher.find()) {
 				text = text.replace(symbolMatcher.group(0), symbolMatcher
 						.group(0).replaceAll("\\d+[.,\\-]?\\d+", ""));

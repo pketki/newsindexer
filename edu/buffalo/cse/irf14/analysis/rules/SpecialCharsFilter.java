@@ -38,7 +38,7 @@ public class SpecialCharsFilter extends TokenFilter {
 			text = text.replaceAll("[\"$&+,:;=@#|<>^*()%~{}_/\\\\]", "");
 
 			if (text.contains("-")) {
-				text = RulesHelper.filterHyphen(text);
+				text = IndexHelper.filterHyphen(text);
 			}
 
 			if (text.equals(""))

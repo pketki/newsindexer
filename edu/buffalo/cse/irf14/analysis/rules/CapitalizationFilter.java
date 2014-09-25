@@ -55,7 +55,7 @@ public class CapitalizationFilter extends TokenFilter {
 				getStream().rollBack();
 			}
 
-			Matcher camelCaseMatcher = RulesHelper.camelCase.matcher(text);
+			Matcher camelCaseMatcher = IndexHelper.camelCase.matcher(text);
 			int count = 0;
 			while (camelCaseMatcher.find()) {
 				count++;
