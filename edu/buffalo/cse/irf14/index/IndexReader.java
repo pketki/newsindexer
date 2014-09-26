@@ -8,7 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,7 +18,9 @@ import java.util.Map.Entry;
 import edu.buffalo.cse.irf14.analysis.rules.IndexHelper;
 
 /**
- * @author nikhillo Class that emulates reading data back from a written index
+ * @author nikhillo
+ * 
+ *         Class that emulates reading data back from a written index
  */
 public class IndexReader {
 	private final String indexDir;
@@ -53,14 +57,11 @@ public class IndexReader {
 						objectInputStream = new ObjectInputStream(
 								fileInputStream);
 						postingsMap = new HashMap<String, Map<String, Integer>>();
-						postingsMap
-								.putAll((Map<String, Map<String, Integer>>) objectInputStream
-										.readObject());
+						postingsMap = ((Map<String, Map<String, Integer>>) objectInputStream
+								.readObject());
 					}
 				}
-
 			}
-
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,7 +85,6 @@ public class IndexReader {
 	 * @return The total number of terms
 	 */
 	public int getTotalKeyTerms() {
-		// TODO : YOU MUST IMPLEMENT THIS
 		return getTermPostings().size();
 	}
 
@@ -128,7 +128,28 @@ public class IndexReader {
 	 *         for invalid k values
 	 */
 	public List<String> getTopK(int k) {
-		// TODO YOU MUST IMPLEMENT THIS
+
+		List<String> topKlist = new ArrayList<String>();
+		Map<String, Integer> sortMap = new HashMap<String, Integer>();
+		for (Entry<String, Map<String, Integer>> entry : getTermPostings()
+				.entrySet()) {
+			sortMap.put(entry.getKey(), entry.getValue().size());
+		}
+		Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+		sortedMap = IndexHelper.sortByValue(sortMap);
+
+		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
+			topKlist.add(entry.getKey().toString());
+		}
+
+		if (k != 0 && !topKlist.isEmpty()) {
+			if (topKlist.size() > k) {
+				while (topKlist.size() > k) {
+					topKlist.remove(topKlist.size() - 1);
+				}
+			}
+			return topKlist;
+		}
 		return null;
 	}
 
