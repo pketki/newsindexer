@@ -10,10 +10,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import edu.buffalo.cse.irf14.analysis.rules.IndexHelper;
 
@@ -46,7 +48,7 @@ public class IndexReader {
 		this.type = type;
 		try {
 			// File fileDir = new File(indexDir);
-			File fileDir = new File("D:\\test");
+			File fileDir = new File(indexDir);
 			File[] fileList = fileDir.listFiles();
 			for (int i = 0; i < fileList.length; i++) {
 				// if (fileList[i].getName().equals("termPostings.ser")) {
@@ -95,12 +97,13 @@ public class IndexReader {
 	 * @return The total number of terms
 	 */
 	public int getTotalValueTerms() {
-		int count = 0;
+		Set<String> documentSet = new HashSet<String>();
 		for (Entry<String, Map<String, Integer>> entry : getTermPostings()
 				.entrySet()) {
-			count += entry.getValue().size();
+			Map<String, Integer> innerMap = entry.getValue();
+			documentSet.addAll(innerMap.keySet());
 		}
-		return count;
+		return documentSet.size();
 	}
 
 	/**
@@ -142,7 +145,7 @@ public class IndexReader {
 			topKlist.add(entry.getKey().toString());
 		}
 
-		if (k != 0 && !topKlist.isEmpty()) {
+		if (k > 0 && !topKlist.isEmpty()) {
 			if (topKlist.size() > k) {
 				while (topKlist.size() > k) {
 					topKlist.remove(topKlist.size() - 1);
