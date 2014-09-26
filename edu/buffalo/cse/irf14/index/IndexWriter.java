@@ -49,6 +49,7 @@ public class IndexWriter {
 	 */
 	public void addDocument(Document d) throws IndexerException {
 		Tokenizer tokenizer = new Tokenizer();
+		String fileId = d.getField(FieldNames.FILEID)[0];
 		try {
 			if (d.getField(FieldNames.AUTHOR) != null) {
 				Map<String, Map<String, Integer>> postings = new HashMap<String, Map<String, Integer>>();
@@ -119,25 +120,27 @@ public class IndexWriter {
 				while (an.increment())
 					;
 
-				System.out.println(ts);
+				System.out.println("Final: " + ts);
+				ts.reset();
 				Map<String, Integer> documentList;
 				while (ts.hasNext()) {
 					Token token = ts.next();
 					String term = token.getTermText();
-					Integer count = 0;
+					System.out.println(term);
+					Integer count = 1;
 					if (!termPostings.containsKey(term)) {
 						documentList = new HashMap<String, Integer>();
-						termPostings.put(term, documentList);
-						count = 1;
-						documentList.put(d.getField(FieldNames.FILEID)[0],
-								count);
 					} else {
 						documentList = termPostings.get(term);
-						count = documentList
-								.get(d.getField(FieldNames.FILEID)[0]);
-						count++;
+						if (documentList.containsKey(fileId)) {
+							count = documentList.get(fileId);
+							count++;
+						}
 					}
+					documentList.put(fileId, count);
+					termPostings.put(term, documentList);
 				}
+				System.out.println(termPostings.get("bid"));
 			}
 
 		} catch (TokenizerException te) {

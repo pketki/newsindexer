@@ -3,6 +3,8 @@
  */
 package edu.buffalo.cse.irf14.analysis.rules;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import edu.buffalo.cse.irf14.analysis.Token;
@@ -56,35 +58,33 @@ public class CapitalizationFilter extends TokenFilter {
 			}
 
 			Matcher camelCaseMatcher = IndexHelper.camelCase.matcher(text);
-			int count = 0;
-			while (camelCaseMatcher.find()) {
-				count++;
-			}
-			// if its simply a capital case word check for adjacent
-			if (count == 1 && Character.isUpperCase(text.charAt(0))) {
+			if (camelCaseMatcher.matches()) {
 				getStream().savePoint();
-				final Token next = getStream().next();
+				final List<Token> mergeList = new ArrayList<Token>();
+				Token next;
 				String nextText;
-				if (next != null
-						&& (nextText = next.getTermText())
-								.matches("[A-Z][a-z0-9]*")) {
-
-					token.merge(next);
-					getStream().remove();
-					text = token.getTermText();
-
-				} else {
-					getStream().rollBack();
-					getStream().savePoint();
-					if (getStream().hasPrevious()) {
-						nextText = getStream().previous().getTermText();
-						if (nextText.charAt(nextText.length() - 1) == '.')
-							text = text.toLowerCase();
-						getStream().rollBack();
+				while (getStream().hasNext()) {
+					next = getStream().next();
+					nextText = next.getTermText();
+					if (nextText.matches(IndexHelper.camelCase.pattern())) {
+						mergeList.add(next);
+						getStream().remove();
 					} else {
-						text = text.toLowerCase();
+						getStream().rollBack();
+						getStream().savePoint();
+						if (getStream().hasPrevious()) {
+							nextText = getStream().previous().getTermText();
+							if (nextText.charAt(nextText.length() - 1) == '.')
+								text = text.toLowerCase();
+							getStream().rollBack();
+						} else {
+							text = text.toLowerCase();
+						}
+						break;
 					}
 				}
+				token.merge(mergeList.toArray(new Token[mergeList.size()]));
+				text = token.getTermText();
 			}
 			if (text.isEmpty())
 				getStream().remove();
