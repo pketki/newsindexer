@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import edu.buffalo.cse.irf14.analysis.rules.IndexHelper;
+import edu.buffalo.cse.irf14.IndexHelper;
 
 /**
  * @author nikhillo
@@ -45,8 +45,8 @@ public class IndexReader {
 		this.indexDir = indexDir;
 		this.type = type;
 		try {
-			// File fileDir = new File(indexDir);
-			File fileDir = new File("D:\\test");
+			File fileDir = new File(indexDir);
+			// File fileDir = new File("D:\\test");
 			File[] fileList = fileDir.listFiles();
 			for (int i = 0; i < fileList.length; i++) {
 				// if (fileList[i].getName().equals("termPostings.ser")) {

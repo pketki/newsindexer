@@ -4,37 +4,101 @@
 package edu.buffalo.cse.irf14.document;
 
 /**
- * @author pketki
- *
+ * @author ketkiram
+ * 
+ */
+/**
+ * @author Dell
+ * 
  */
 public class Fields {
-	private String fileId;
-	private String title;
-	private String place;
-	private String content;
-	public String getFileId() {
-		return fileId;
+	private String[] fileId;
+	private String[] category;
+	private String[] author;
+	private String[] authorOrg;
+	private String[] title;
+	private String[] place;
+	private String[] newsDate;
+	private String[] content;
+
+	/**
+	 * Default constructor
+	 */
+	public Fields() {
+		fileId = null;
+		category = null;
+		author = null;
+		authorOrg = null;
+		title = null;
+		place = null;
+		newsDate = null;
+		content = null;
 	}
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
+
+	/**
+	 * Method to get field value based on FieldName type
+	 * 
+	 * @param fn
+	 * @return String array value of that field
+	 */
+	public String[] getFieldFromEnum(FieldNames fn) {
+		switch (fn) {
+		case FILEID:
+			return fileId;
+		case AUTHOR:
+			return author;
+		case AUTHORORG:
+			return authorOrg;
+		case CATEGORY:
+			return category;
+		case CONTENT:
+			return content;
+		case NEWSDATE:
+			return newsDate;
+		case PLACE:
+			return place;
+		case TITLE:
+			return title;
+		default:
+			return null;
+		}
 	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
-	public String getPlace() {
-		return place;
-	}
-	public void setPlace(String place) {
-		this.place = place;
-	}
-	public String getContent() {
-		return content;
-	}
-	public void setContent(String content) {
-		this.content = content;
+
+	/**
+	 * Method to set field of type FieldName with given value
+	 * 
+	 * @param fn
+	 * @param value
+	 */
+	public void setFieldFromEnum(FieldNames fn, String[] value) {
+		switch (fn) {
+		case FILEID:
+			fileId = value;
+			break;
+		case AUTHOR:
+			author = value;
+			break;
+		case AUTHORORG:
+			authorOrg = value;
+			break;
+		case CATEGORY:
+			category = value;
+			break;
+		case CONTENT:
+			content = value;
+			break;
+		case NEWSDATE:
+			newsDate = value;
+			break;
+		case PLACE:
+			place = value;
+			break;
+		case TITLE:
+			title = value;
+			break;
+		default:
+			break;
+		}
 	}
 
 }

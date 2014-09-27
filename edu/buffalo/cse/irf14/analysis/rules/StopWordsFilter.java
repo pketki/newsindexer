@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.irf14.analysis.rules;
 
+import edu.buffalo.cse.irf14.IndexHelper;
 import edu.buffalo.cse.irf14.analysis.Token;
 import edu.buffalo.cse.irf14.analysis.TokenFilter;
 import edu.buffalo.cse.irf14.analysis.TokenStream;

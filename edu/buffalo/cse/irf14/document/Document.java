@@ -3,20 +3,18 @@
  */
 package edu.buffalo.cse.irf14.document;
 
-import java.util.HashMap;
-
 /**
  * @author nikhillo Wrapper class that holds {@link FieldNames} to value mapping
  */
 public class Document {
-	// Sample implementation - you can change this if you like
-	private final HashMap<FieldNames, String[]> map;
+
+	private final Fields fields;
 
 	/**
 	 * Default constructor
 	 */
 	public Document() {
-		map = new HashMap<FieldNames, String[]>();
+		fields = new Fields();
 	}
 
 	/**
@@ -28,7 +26,7 @@ public class Document {
 	 *            : The value to be set to
 	 */
 	public void setField(FieldNames fn, String... o) {
-		map.put(fn, o);
+		fields.setFieldFromEnum(fn, o);
 	}
 
 	/**
@@ -39,39 +37,42 @@ public class Document {
 	 * @return The associated value, null if not found
 	 */
 	public String[] getField(FieldNames fn) {
-		return map.get(fn);
+		return fields.getFieldFromEnum(fn);
 	}
 
+	/**
+	 * Method to see what's in the document. Used mostly for internal testing
+	 */
 	@Override
 	public String toString() {
 		StringBuffer retVal = new StringBuffer("Document [fileId: "
-				+ map.get(FieldNames.FILEID)[0]);
+				+ getField(FieldNames.FILEID)[0]);
 		retVal.append(" category: ");
-		retVal.append(map.get(FieldNames.CATEGORY)[0]);
+		retVal.append(getField(FieldNames.CATEGORY)[0]);
 
-		if (map.get(FieldNames.AUTHOR) != null) {
+		if (getField(FieldNames.AUTHOR) != null) {
 			retVal.append(" author: ");
-			retVal.append(map.get(FieldNames.AUTHOR)[0]);
+			retVal.append(getField(FieldNames.AUTHOR)[0]);
 		}
-		if (map.get(FieldNames.AUTHORORG) != null) {
+		if (getField(FieldNames.AUTHORORG) != null) {
 			retVal.append(" author org: ");
-			retVal.append(map.get(FieldNames.AUTHORORG)[0]);
+			retVal.append(getField(FieldNames.AUTHORORG)[0]);
 		}
-		if (map.get(FieldNames.TITLE) != null) {
+		if (getField(FieldNames.TITLE) != null) {
 			retVal.append(" title: ");
-			retVal.append(map.get(FieldNames.TITLE)[0]);
+			retVal.append(getField(FieldNames.TITLE)[0]);
 		}
-		if (map.get(FieldNames.PLACE) != null) {
+		if (getField(FieldNames.PLACE) != null) {
 			retVal.append(" place: ");
-			retVal.append(map.get(FieldNames.PLACE)[0]);
+			retVal.append(getField(FieldNames.PLACE)[0]);
 		}
-		if (map.get(FieldNames.NEWSDATE) != null) {
+		if (getField(FieldNames.NEWSDATE) != null) {
 			retVal.append(" date: ");
-			retVal.append(map.get(FieldNames.NEWSDATE)[0]);
+			retVal.append(getField(FieldNames.NEWSDATE)[0]);
 		}
-		if (map.get(FieldNames.CONTENT) != null) {
+		if (getField(FieldNames.CONTENT) != null) {
 			retVal.append(" content: ");
-			retVal.append(map.get(FieldNames.CONTENT)[0]);
+			retVal.append(getField(FieldNames.CONTENT)[0]);
 		}
 		retVal.append("]");
 		return retVal.toString();

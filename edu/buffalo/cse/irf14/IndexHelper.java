@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.buffalo.cse.irf14.analysis.rules;
+package edu.buffalo.cse.irf14;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,13 +25,14 @@ import edu.buffalo.cse.irf14.index.IndexType;
  */
 public final class IndexHelper {
 
+	public static Pattern month = Pattern
+			.compile("\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*");
 	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
-
 	public static Pattern numeric = Pattern.compile("\\d*[\\/.,\\-]?\\d*%*$");
+	// String titleRegEx = "^[A-Z0-9<>()/.,'\\-\\s]*$";
 	public static Pattern camelCase = Pattern
 			.compile("([a-z]*[A-Z]+[a-z]+)+|([a-z]+[A-Z]+[a-z]*)+");
 
-	// public static Pattern numeric = Pattern.compile("[\\d*[\\/.,\\-]?]*%*$");
 	public static Map<String, String> commonContractionsMap = new TreeMap<String, String>(
 			String.CASE_INSENSITIVE_ORDER);
 	public static List<String> stopWordsList = new ArrayList<String>();

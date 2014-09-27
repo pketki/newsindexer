@@ -38,7 +38,6 @@ public class Runner {
 
 		File ipDirectory = new File(ipDir);
 		String[] catDirectories = ipDirectory.list();
-		System.out.println(catDirectories[0]);
 
 		String[] files;
 		File dir;
@@ -49,7 +48,6 @@ public class Runner {
 		try {
 			for (String cat : catDirectories) {
 				dir = new File(ipDir + File.separator + cat);
-				System.out.println(dir);
 				files = dir.list();
 
 				if (files == null)
