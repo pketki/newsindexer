@@ -5,6 +5,7 @@ package edu.buffalo.cse.irf14.document;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import edu.buffalo.cse.irf14.IndexHelper;
@@ -39,7 +40,7 @@ public class Parser {
 		document.setField(FieldNames.CATEGORY, file.getParentFile().getName());
 
 		String line, date, authorOrg = null;
-		String[] author = new String[10];
+		ArrayList<String> author = new ArrayList<String>();
 		StringBuilder place = new StringBuilder("");
 		StringBuilder content = new StringBuilder("");
 
@@ -64,16 +65,17 @@ public class Parser {
 								",| and|</AUTHOR>");
 						// first or only entry will be considered author name
 						if (authorInfo.length > 0)
-							author[0] = authorInfo[0].trim();
+							author.add(authorInfo[0].trim());
 						if (authorInfo.length > 1) {
 							// for multiple authors, add to author array
 							for (int i = 1; i < authorInfo.length - 1; i++)
-								author[i] = authorInfo[i].trim();
+								author.add(authorInfo[i].trim());
 							// last string is considered to be author org
 							authorOrg = authorInfo[authorInfo.length - 1]
 									.trim();
 						}
-						document.setField(FieldNames.AUTHOR, author);
+						document.setField(FieldNames.AUTHOR,
+								author.toArray(new String[author.size()]));
 						document.setField(FieldNames.AUTHORORG, authorOrg);
 					}
 
