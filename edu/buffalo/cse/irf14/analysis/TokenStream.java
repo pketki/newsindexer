@@ -48,8 +48,8 @@ public class TokenStream implements Iterator<Token> {
 	 */
 	@Override
 	public Token next() {
-		if (this.hasNext()) {
-			this.position++;
+		position++;
+		if (this.hasNext() || position == (size - 1)) {
 			return tokenList.get(position);
 		}
 		return null;
@@ -123,7 +123,9 @@ public class TokenStream implements Iterator<Token> {
 	 *         has been reached or the current Token was removed
 	 */
 	public Token getCurrent() {
-		return (position < 0 ? null : tokenList.get(position));
+		if (position < 0 || position >= size)
+			return null;
+		return tokenList.get(position);
 	}
 
 	/**

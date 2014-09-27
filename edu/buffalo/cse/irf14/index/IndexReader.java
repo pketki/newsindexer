@@ -132,6 +132,8 @@ public class IndexReader {
 	 */
 	public List<String> getTopK(int k) {
 
+		int count = 0;
+		List<String> termList = new ArrayList<String>();
 		List<String> topKlist = new ArrayList<String>();
 		Map<String, Integer> sortMap = new HashMap<String, Integer>();
 		for (Entry<String, Map<String, Integer>> entry : getTermPostings()
@@ -142,14 +144,12 @@ public class IndexReader {
 		sortedMap = IndexHelper.sortByValue(sortMap);
 
 		for (Entry<String, Integer> entry : sortedMap.entrySet()) {
-			topKlist.add(entry.getKey().toString());
+			termList.add(entry.getKey().toString());
 		}
 
-		if (k > 0 && !topKlist.isEmpty()) {
-			if (topKlist.size() > k) {
-				while (topKlist.size() > k) {
-					topKlist.remove(topKlist.size() - 1);
-				}
+		if (k > 0 && !termList.isEmpty()) {
+			while (topKlist.size() < k) {
+				topKlist.add(termList.get(count++));
 			}
 			return topKlist;
 		}

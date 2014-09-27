@@ -35,7 +35,6 @@ public class StemmerFilter extends TokenFilter {
 		}
 
 		if (token != null) {
-			// token = token.toLowerCase();
 			if (isLettersOnly(token)) {
 				stemmer = new Stemmer();
 				for (char c : token.getTermBuffer()) {
@@ -44,15 +43,6 @@ public class StemmerFilter extends TokenFilter {
 
 				stemmer.stem();
 				token.setTermText(stemmer.toString());
-				// stream.previous(); // move token back as we need to
-				// change
-				// last read token
-				// stream.getCurrent().setTermText(stemmer.toString());
-				// stream.set(stemmer.toString()); // change value, no
-				// iterator
-				// move
-				// stream.next(); // move iter to next posiiton, beyond the
-				// token we just changed
 			}
 			return true;
 		}

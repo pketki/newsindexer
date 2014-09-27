@@ -57,7 +57,7 @@ public class Parser {
 					document.setField(FieldNames.TITLE, line);
 
 					// check for author info
-					if (reader.findWithinHorizon("<AUTHOR>", 200) != null) {
+					if (reader.findWithinHorizon("<AUTHOR>", 100) != null) {
 						reader.findInLine("by|By|BY");
 						line = reader.nextLine();
 						String[] authorInfo = line.trim().split(
