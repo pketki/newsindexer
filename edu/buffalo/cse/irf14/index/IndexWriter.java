@@ -196,12 +196,12 @@ public class IndexWriter {
 		// }
 	}
 
-	private boolean writeToDisk(Map dictionary) {
+	private boolean writeToDisk(Map dictionary, String fileName) {
 		FileOutputStream fos;
 		try {
-			fos = new FileOutputStream(indexDir + "\\termPostings" + ".ser");
+			fos = new FileOutputStream(indexDir + "\\" + fileName + ".ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-			oos.writeObject(termPostings);
+			oos.writeObject(dictionary);
 			oos.close();
 			return true;
 		} catch (FileNotFoundException e) {
@@ -222,7 +222,11 @@ public class IndexWriter {
 	 * @throws IOException
 	 */
 	public void close() throws IndexerException {
-		if (!writeToDisk(docDictionary))
+		if (!(writeToDisk(docDictionary, "Document_Dictionary")
+				&& writeToDisk(authorDictionary, "Author_Dictionary")
+				&& writeToDisk(authorIndex, "Author_Index")
+				&& writeToDisk(placeDictionary, "Place_Dictionary") && writeToDisk(
+					placeIndex, "Place_Index")))
 			throw new IndexerException();
 	}
 }
