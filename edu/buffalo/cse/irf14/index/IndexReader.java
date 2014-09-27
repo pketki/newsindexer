@@ -46,6 +46,9 @@ public class IndexReader {
 	public IndexReader(String indexDir, IndexType type) {
 		this.indexDir = indexDir;
 		this.type = type;
+	}
+
+	private Map<String, Map<String, Integer>> getTermPostings() {
 		try {
 			// File fileDir = new File(indexDir);
 			File fileDir = new File(indexDir);
@@ -74,9 +77,6 @@ public class IndexReader {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	private Map<String, Map<String, Integer>> getTermPostings() {
 		return this.postingsMap;
 	}
 

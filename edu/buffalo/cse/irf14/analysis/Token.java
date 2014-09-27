@@ -29,6 +29,7 @@ public class Token {
 	public Token(String termText, int termPosition) {
 		super();
 		this.termText = termText;
+		termBuffer = termText.toCharArray();
 		this.termPosition = termPosition;
 	}
 
@@ -132,7 +133,7 @@ public class Token {
 	 *            The token array to be merged
 	 */
 	public void merge(Token... tokens) {
-		StringBuilder mergedText = new StringBuilder(this.termText);
+		StringBuilder mergedText = new StringBuilder(termText);
 		for (Token t : tokens) {
 			mergedText.append(" " + t.getTermText());
 		}
@@ -152,7 +153,7 @@ public class Token {
 	 */
 	@Override
 	public String toString() {
-		String retval = (isSpecial() ? null : this.termText);
+		String retval = (isSpecial() ? "" : termText);
 		return retval;
 	}
 }

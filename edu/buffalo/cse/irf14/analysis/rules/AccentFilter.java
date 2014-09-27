@@ -23,6 +23,7 @@ public class AccentFilter extends TokenFilter {
 
 		if (this.isChaining())
 			token = getStream().getCurrent();
+
 		if (token == null && getStream().hasNext()) {
 			token = getStream().next();
 		}
@@ -34,7 +35,6 @@ public class AccentFilter extends TokenFilter {
 			token.setTermText(tokenString);
 			return true;
 		}
-		getStream().reset();
 		return false;
 	}
 

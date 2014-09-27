@@ -52,7 +52,6 @@ public class TokenFilterFactory {
 	 * @return The built {@link TokenFilter} instance
 	 */
 	public TokenFilter getFilterByType(TokenFilterType type, TokenStream stream) {
-		// TODO : YOU MUST IMPLEMENT THIS METHOD
 		switch (type) {
 		case ACCENT:
 			tokenFilter = new AccentFilter(stream);

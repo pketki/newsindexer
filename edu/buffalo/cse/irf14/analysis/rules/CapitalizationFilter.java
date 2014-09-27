@@ -84,8 +84,10 @@ public class CapitalizationFilter extends TokenFilter {
 						break;
 					}
 				}
-				token.merge(mergeList.toArray(new Token[mergeList.size()]));
-				text = token.getTermText();
+				if (mergeList.size() > 0) {
+					token.merge(mergeList.toArray(new Token[mergeList.size()]));
+					text = token.getTermText();
+				}
 			}
 			if (text.isEmpty())
 				getStream().remove();

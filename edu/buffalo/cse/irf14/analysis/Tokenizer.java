@@ -52,7 +52,7 @@ public class Tokenizer {
 
 		final TokenStream tokenStream = new TokenStream();
 
-		String[] tokenString = str.split(this.delimiter);
+		String[] tokenString = str.split(delimiter);
 		final List<Token> tokenList = new Vector<Token>(tokenString.length);
 		int tokenIndex = 0;
 

@@ -37,7 +37,10 @@ public final class IndexHelper {
 			String.CASE_INSENSITIVE_ORDER);
 	public static List<String> stopWordsList = new ArrayList<String>();
 
+	public static Integer DOCUMENTINDEX = 0;
+	public static Integer AUTHORINDEX = 0;
 	public static Map<IndexType, String> postingsMapping = new HashMap<IndexType, String>();
+	public static int PLACEINDEX = 0;
 
 	static {
 		postingsMapping.put(IndexType.AUTHOR, "authorPostings.ser");
