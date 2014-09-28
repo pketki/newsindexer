@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import edu.buffalo.cse.irf14.IndexHelper;
 import edu.buffalo.cse.irf14.analysis.Token;
 import edu.buffalo.cse.irf14.analysis.TokenFilter;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
@@ -101,11 +102,8 @@ public class DateFilter extends TokenFilter {
 
 					if (!isFound
 							&& tempToken != null
-							&& tempToken
-									.getTermText()
-									.trim()
-									.matches(
-											"\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*")) {
+							&& tempToken.getTermText().trim()
+									.matches(IndexHelper.month.pattern())) {
 						isFound = true;
 						dateString = tempToken.getTermText().trim()
 								.replaceAll(",", "")
@@ -120,9 +118,8 @@ public class DateFilter extends TokenFilter {
 				}
 
 				if (!isFound
-						&& token.getTermText()
-								.matches(
-										"\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*")) {
+						&& token.getTermText().matches(
+								IndexHelper.month.pattern())) {
 
 					dateString = token.getTermText().trim().replaceAll(",", "");
 					isFound = true;
