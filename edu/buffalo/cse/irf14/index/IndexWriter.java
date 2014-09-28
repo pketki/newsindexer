@@ -29,18 +29,24 @@ public class IndexWriter {
 	private final String indexDir;
 	private final Tokenizer tokenizer;
 
-	private final Map<Integer, Set<Integer>> termIndex;
-	private final Map<Integer, Set<Integer>> authorIndex;
-	private final Map<Integer, Set<Integer>> categoryIndex;
-	private final Map<Integer, Set<Integer>> placeIndex;
+	private Map<String, Set<String>> termIndex;
+	private Map<String, Set<String>> authorIndex;
+	private Map<String, Set<String>> categoryIndex;
+	private Map<String, Set<String>> placeIndex;
 
-	private final Map<String, Integer> docDictionary;
-	private final Map<String, Integer> termDictionary;
-	private final Map<String, Integer> authorDictionary;
-	private final Map<String, Integer> categoryDictionary;
-	private final Map<String, Integer> placeDictionary;
+	private Map<String, Integer> docDictionary;
+	private Map<String, Integer> termDictionary;
+	private Map<String, Integer> authorDictionary;
+	private Map<String, Integer> categoryDictionary;
+	private Map<String, Integer> placeDictionary;
 
-	private final Map<Integer, Map<Integer, Integer>> termPostings;
+	private int authorCount = 0;
+	private int docCount = 0;
+	private int titleCount = 0;
+	private int placeCount = 0;
+	private int categoryCount = 0;
+	private int termCount = 0;
+	private final Map<String, Map<String, Integer>> termPostings;
 
 	/**
 	 * Default constructor
@@ -52,53 +58,56 @@ public class IndexWriter {
 		this.indexDir = indexDir;
 		tokenizer = new Tokenizer();
 
-		termIndex = new HashMap<Integer, Set<Integer>>();
-		authorIndex = new TreeMap<Integer, Set<Integer>>();
-		categoryIndex = new TreeMap<Integer, Set<Integer>>();
-		placeIndex = new TreeMap<Integer, Set<Integer>>();
-
+		termIndex = new HashMap<String, Set<String>>();
+		authorIndex = new TreeMap<String, Set<String>>(
+				String.CASE_INSENSITIVE_ORDER);
+		categoryIndex = new TreeMap<String, Set<String>>(
+				String.CASE_INSENSITIVE_ORDER);
+		placeIndex = new TreeMap<String, Set<String>>(
+				String.CASE_INSENSITIVE_ORDER);
 		docDictionary = new HashMap<String, Integer>();
 		termDictionary = new HashMap<String, Integer>();
-		authorDictionary = new TreeMap<String, Integer>();
-		categoryDictionary = new TreeMap<String, Integer>();
-		placeDictionary = new TreeMap<String, Integer>();
+		authorDictionary = new TreeMap<String, Integer>(
+				String.CASE_INSENSITIVE_ORDER);
+		categoryDictionary = new TreeMap<String, Integer>(
+				String.CASE_INSENSITIVE_ORDER);
+		placeDictionary = new TreeMap<String, Integer>(
+				String.CASE_INSENSITIVE_ORDER);
 
-		termPostings = new HashMap<Integer, Map<Integer, Integer>>();
+		termPostings = new HashMap<String, Map<String, Integer>>();
 	}
 
 	private int addtoDictionaryAndIndex(Map<String, Integer> dictionary,
-			Integer dictionaryIndex, Map<Integer, Set<Integer>> index,
-			String term, String fileId) {
-		Set<Integer> postings;
+			int dictionaryIndex, Map<String, Set<String>> index, String term,
+			String fileId) {
+		Set<String> postings;
 		int idx = dictionaryIndex;
 		if (!dictionary.containsKey(term)) {
 			idx++;
 			dictionary.put(term, idx);
-			postings = new HashSet<Integer>();
+			postings = new HashSet<String>();
 		} else {
-			postings = index.get(dictionaryIndex);
+			postings = index.get(term);
 		}
-		postings.add(docDictionary.get(fileId));
-		index.put(dictionaryIndex, postings);
-		return idx;
+		postings.add(fileId);
+		index.put(term, postings);
+		return idx++;
 	}
 
 	private void addToTermMapping(String term, String fileId) {
-		Map<Integer, Integer> documentList;
+		Map<String, Integer> documentList;
 		Integer count = 1;
-		Integer termId = termDictionary.get(term);
-		Integer docId = docDictionary.get(fileId);
-		if (!termPostings.containsKey(termId)) {
-			documentList = new HashMap<Integer, Integer>();
+		if (!termPostings.containsKey(term)) {
+			documentList = new HashMap<String, Integer>();
 		} else {
-			documentList = termPostings.get(termId);
-			if (documentList.containsKey(docId)) {
-				count = documentList.get(docId);
+			documentList = termPostings.get(term);
+			if (documentList.containsKey(fileId)) {
+				count = documentList.get(fileId);
 				count++;
 			}
 		}
-		documentList.put(docId, count);
-		termPostings.put(termId, documentList);
+		documentList.put(fileId, count);
+		termPostings.put(term, documentList);
 	}
 
 	private int generateHash(String term) {
@@ -134,23 +143,24 @@ public class IndexWriter {
 		Analyzer an;
 
 		try {
-			String category = d.getField(FieldNames.CATEGORY)[0];
-			TokenStream stream = tokenizer.consume(category);
-			an = af.getAnalyzerForField(FieldNames.CATEGORY, stream);
-			addtoDictionaryAndIndex(categoryDictionary, generateHash(category),
-					categoryIndex, category, fileId);
-
+			if (d.getField(FieldNames.CATEGORY) != null) {
+				String category = d.getField(FieldNames.CATEGORY)[0];
+				TokenStream stream = tokenizer.consume(category);
+				an = af.getAnalyzerForField(FieldNames.CATEGORY, stream);
+				categoryCount = addtoDictionaryAndIndex(categoryDictionary,
+						categoryCount, categoryIndex, category, fileId);
+			}
 			if (authorInputs != null) {
 				TokenStream ts = null;
 				for (String input : authorInputs)
 					ts = tokenizer.consume(input);
-				System.out.println(ts);
+				// System.out.println(ts);
 
 				an = af.getAnalyzerForField(FieldNames.AUTHOR, ts);
 				while (an.increment())
 					;
 
-				System.out.println(ts);
+				// System.out.println(ts);
 
 				ts.reset();
 				Token token;
@@ -158,19 +168,23 @@ public class IndexWriter {
 				while (ts.hasNext()) {
 					token = ts.next();
 					term = token.getTermText();
-					addtoDictionaryAndIndex(authorDictionary,
-							generateHash(term), authorIndex, term, fileId);
+					// addtoDictionaryAndIndex(authorDictionary,
+					// generateHash(term), authorIndex, term, fileId);
+					authorCount = addtoDictionaryAndIndex(authorDictionary,
+							authorCount, authorIndex, term, fileId);
+					// System.out
+					// .println("author count ----------:" + authorCount);
 				}
 			}
 
 			if (d.getField(FieldNames.TITLE) != null) {
 				TokenStream ts = tokenizer
 						.consume(d.getField(FieldNames.TITLE)[0]);
-				System.out.println(ts);
+				// System.out.println(ts);
 				an = af.getAnalyzerForField(FieldNames.TITLE, ts);
 				while (an.increment())
 					;
-				System.out.println(ts);
+				// System.out.println(ts);
 
 				ts.reset();
 				Token token;
@@ -178,8 +192,8 @@ public class IndexWriter {
 				while (ts.hasNext()) {
 					token = ts.next();
 					term = token.getTermText();
-					addtoDictionaryAndIndex(termDictionary, generateHash(term),
-							termIndex, term, fileId);
+					titleCount = addtoDictionaryAndIndex(termDictionary,
+							titleCount, termIndex, term, fileId);
 
 					addToTermMapping(term, fileId);
 				}
@@ -187,11 +201,11 @@ public class IndexWriter {
 			if (d.getField(FieldNames.PLACE) != null) {
 				TokenStream ts = tokenizer
 						.consume(d.getField(FieldNames.PLACE)[0]);
-				System.out.println(ts);
+				// System.out.println(ts);
 				an = af.getAnalyzerForField(FieldNames.PLACE, ts);
 				while (an.increment())
 					;
-				System.out.println(ts);
+				// System.out.println(ts);
 
 				ts.reset();
 				Token token;
@@ -200,27 +214,29 @@ public class IndexWriter {
 					token = ts.next();
 					term = token.getTermText();
 
-					addtoDictionaryAndIndex(placeDictionary,
-							generateHash(term), placeIndex, term, fileId);
+					placeCount = addtoDictionaryAndIndex(placeDictionary,
+							placeCount, placeIndex, term, fileId);
 				}
 			}
 			if (d.getField(FieldNames.CONTENT) != null) {
 				TokenStream ts = tokenizer.consume(d
 						.getField(FieldNames.CONTENT)[0]);
-				System.out.println(ts);
+				// System.out.println(ts);
 				an = af.getAnalyzerForField(FieldNames.CONTENT, ts);
 				while (an.increment())
 					;
 
-				System.out.println("Final: " + ts);
+				// System.out.println("Final: " + ts);
 				ts.reset();
 				while (ts.hasNext()) {
 					Token token = ts.next();
 					String term = token.getTermText();
-					addtoDictionaryAndIndex(termDictionary, generateHash(term),
-							termIndex, term, fileId);
+
+					termCount = addtoDictionaryAndIndex(termDictionary,
+							termCount, termIndex, term, fileId);
 
 					addToTermMapping(term, fileId);
+					// System.out.println(termDictionary);
 				}
 			}
 
@@ -255,11 +271,14 @@ public class IndexWriter {
 	 * @throws IOException
 	 */
 	public void close() throws IndexerException {
-		if (!(writeToDisk(docDictionary, "Document_Dictionary")
-				&& writeToDisk(authorDictionary, "Author_Dictionary")
+		if (!(writeToDisk(authorDictionary, "Author_Dictionary")
 				&& writeToDisk(authorIndex, "Author_Index")
-				&& writeToDisk(placeDictionary, "Place_Dictionary") && writeToDisk(
-					placeIndex, "Place_Index")))
+				&& writeToDisk(placeDictionary, "Place_Dictionary")
+				&& writeToDisk(placeIndex, "Place_Index")
+				&& writeToDisk(termDictionary, "Term_Dictionary")
+				&& writeToDisk(termPostings, "termPostings")
+				&& writeToDisk(docDictionary, "Document_Dictionary") && writeToDisk(
+					termIndex, "Term_Index")))
 			throw new IndexerException();
 	}
 }
