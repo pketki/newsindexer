@@ -40,19 +40,25 @@ public class CapitalizationFilter extends TokenFilter {
 			text = token.getTermText();
 
 			String regex = "[A-Z0-9]*$";
+
 			if (token.isAllCaps())
 				text = text.toLowerCase();
 			else if (text.matches(regex)) {
-				// check upto 2 next tokens for all caps
 				getStream().savePoint();
 
-				final Token next1 = getStream().next();
-				if (next1 != null && next1.getTermText().matches(regex)) {
-					final Token next2 = getStream().next();
-					if (next2 != null && next2.getTermText().matches(regex)) {
-						next1.setAllCaps(true);
-						next2.setAllCaps(true);
-						text = text.toLowerCase();
+				if (getStream().hasPrevious()
+						&& getStream().previous().isAllCaps())
+					text = text.toLowerCase();
+				else {
+					// check upto 2 next tokens for all caps
+					final Token next1 = getStream().next();
+					if (next1 != null && next1.getTermText().matches(regex)) {
+						final Token next2 = getStream().next();
+						if (next2 != null && next2.getTermText().matches(regex)) {
+							next1.setAllCaps(true);
+							next2.setAllCaps(true);
+							text = text.toLowerCase();
+						}
 					}
 				}
 				getStream().rollBack();

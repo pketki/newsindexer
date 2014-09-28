@@ -29,9 +29,9 @@ public class Runner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// String ipDir = "C:/git/newsindexer/training";
+		String ipDir = "C:/git/newsindexer/training";
 		// args[0];
-		String ipDir = "C:/KettWorkspace/inputfile";
+		// String ipDir = "C:/KettWorkspace/inputfile";
 		String indexDir = "C:\\KettWorkspace\\serializedfiles";// args[1];
 		// String indexDir = "D:\\test";// args[1];
 		// more? idk!
@@ -71,7 +71,7 @@ public class Runner {
 			writer.close();
 
 			IndexReader reader = new IndexReader(indexDir, IndexType.TERM);
-			System.out.println(reader.getPostings("bid"));
+			System.out.println(reader.getPostings("Ketki Purandare"));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

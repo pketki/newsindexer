@@ -41,13 +41,13 @@ public class TermAnalyzer extends FieldAnalyzer {
 		accentFilter.setChaining(true);
 		specialCharFilter.setChaining(true);
 		numberFilter.setChaining(true);
-		capitalFilter.setChaining(true);
+		symbolFilter.setChaining(true);
 		stemmerFilter.setChaining(true);
 		stopwordFilter.setChaining(true);
 
-		return symbolFilter.increment() && accentFilter.increment()
-				&& specialCharFilter.increment() && numberFilter.increment()
-				&& capitalFilter.increment() && stemmerFilter.increment()
+		return capitalFilter.increment() && symbolFilter.increment()
+				&& accentFilter.increment() && specialCharFilter.increment()
+				&& numberFilter.increment() && stemmerFilter.increment()
 				&& stopwordFilter.increment();
 	}
 }

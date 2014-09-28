@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import edu.buffalo.cse.irf14.IndexHelper;
 import edu.buffalo.cse.irf14.analysis.Analyzer;
 import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
 import edu.buffalo.cse.irf14.analysis.Token;
@@ -41,7 +40,7 @@ public class IndexWriter {
 	private final Map<String, Integer> categoryDictionary;
 	private final Map<String, Integer> placeDictionary;
 
-	private final Map<String, Map<String, Integer>> termPostings;
+	private final Map<Integer, Map<Integer, Integer>> termPostings;
 
 	/**
 	 * Default constructor
@@ -64,7 +63,53 @@ public class IndexWriter {
 		categoryDictionary = new TreeMap<String, Integer>();
 		placeDictionary = new TreeMap<String, Integer>();
 
-		termPostings = new HashMap<String, Map<String, Integer>>();
+		termPostings = new HashMap<Integer, Map<Integer, Integer>>();
+	}
+
+	private int addtoDictionaryAndIndex(Map<String, Integer> dictionary,
+			Integer dictionaryIndex, Map<Integer, Set<Integer>> index,
+			String term, String fileId) {
+		Set<Integer> postings;
+		int idx = dictionaryIndex;
+		if (!dictionary.containsKey(term)) {
+			idx++;
+			dictionary.put(term, idx);
+			postings = new HashSet<Integer>();
+		} else {
+			postings = index.get(dictionaryIndex);
+		}
+		postings.add(docDictionary.get(fileId));
+		index.put(dictionaryIndex, postings);
+		return idx;
+	}
+
+	private void addToTermMapping(String term, String fileId) {
+		Map<Integer, Integer> documentList;
+		Integer count = 1;
+		Integer termId = termDictionary.get(term);
+		Integer docId = docDictionary.get(fileId);
+		if (!termPostings.containsKey(termId)) {
+			documentList = new HashMap<Integer, Integer>();
+		} else {
+			documentList = termPostings.get(termId);
+			if (documentList.containsKey(docId)) {
+				count = documentList.get(docId);
+				count++;
+			}
+		}
+		documentList.put(docId, count);
+		termPostings.put(termId, documentList);
+	}
+
+	private int generateHash(String term) {
+		if (term != null && !term.isEmpty()) {
+			int hash = 7;
+			for (int i = 0; i < term.length(); i++) {
+				hash = hash * 31 + term.charAt(i);
+			}
+			return hash;
+		}
+		return 0;
 	}
 
 	/**
@@ -81,14 +126,20 @@ public class IndexWriter {
 	public void addDocument(Document d) throws IndexerException {
 		String fileId = d.getField(FieldNames.FILEID)[0];
 
-		if (!docDictionary.containsKey(fileId))
-			docDictionary.put(fileId, ++IndexHelper.DOCUMENTINDEX);
-
+		if (!docDictionary.containsKey(fileId)) {
+			docDictionary.put(fileId, generateHash(fileId));
+		}
 		String[] authorInputs = d.getField(FieldNames.AUTHOR);
 		AnalyzerFactory af = AnalyzerFactory.getInstance();
 		Analyzer an;
 
 		try {
+			String category = d.getField(FieldNames.CATEGORY)[0];
+			TokenStream stream = tokenizer.consume(category);
+			an = af.getAnalyzerForField(FieldNames.CATEGORY, stream);
+			addtoDictionaryAndIndex(categoryDictionary, generateHash(category),
+					categoryIndex, category, fileId);
+
 			if (authorInputs != null) {
 				TokenStream ts = null;
 				for (String input : authorInputs)
@@ -99,35 +150,40 @@ public class IndexWriter {
 				while (an.increment())
 					;
 
+				System.out.println(ts);
+
 				ts.reset();
 				Token token;
 				String term;
-				Set<Integer> authorDocSet;
 				while (ts.hasNext()) {
 					token = ts.next();
 					term = token.getTermText();
-
-					if (!authorDictionary.containsKey(term)) {
-						authorDictionary.put(term, ++IndexHelper.AUTHORINDEX);
-						authorDocSet = new HashSet<Integer>();
-					} else {
-						authorDocSet = authorIndex.get(IndexHelper.AUTHORINDEX);
-					}
-					authorDocSet.add(docDictionary.get(fileId));
-					authorIndex.put(IndexHelper.AUTHORINDEX, authorDocSet);
+					addtoDictionaryAndIndex(authorDictionary,
+							generateHash(term), authorIndex, term, fileId);
 				}
 			}
 
-			// if (d.getField(FieldNames.TITLE) != null) {
-			// TokenStream ts = tokenizer
-			// .consume(d.getField(FieldNames.TITLE)[0]);
-			// System.out.println(ts);
-			// an = af.getAnalyzerForField(FieldNames.TITLE, ts);
-			// while (an.increment())
-			// ;
-			//
-			// System.out.println(ts);
-			// }
+			if (d.getField(FieldNames.TITLE) != null) {
+				TokenStream ts = tokenizer
+						.consume(d.getField(FieldNames.TITLE)[0]);
+				System.out.println(ts);
+				an = af.getAnalyzerForField(FieldNames.TITLE, ts);
+				while (an.increment())
+					;
+				System.out.println(ts);
+
+				ts.reset();
+				Token token;
+				String term;
+				while (ts.hasNext()) {
+					token = ts.next();
+					term = token.getTermText();
+					addtoDictionaryAndIndex(termDictionary, generateHash(term),
+							termIndex, term, fileId);
+
+					addToTermMapping(term, fileId);
+				}
+			}
 			if (d.getField(FieldNames.PLACE) != null) {
 				TokenStream ts = tokenizer
 						.consume(d.getField(FieldNames.PLACE)[0]);
@@ -135,65 +191,42 @@ public class IndexWriter {
 				an = af.getAnalyzerForField(FieldNames.PLACE, ts);
 				while (an.increment())
 					;
+				System.out.println(ts);
+
 				ts.reset();
 				Token token;
 				String term;
-				Set<Integer> placeDocSet;
 				while (ts.hasNext()) {
 					token = ts.next();
 					term = token.getTermText();
 
-					if (!placeDictionary.containsKey(term)) {
-						placeDictionary.put(term, ++IndexHelper.PLACEINDEX);
-						placeDocSet = new HashSet<Integer>();
-					} else {
-						placeDocSet = authorIndex.get(IndexHelper.PLACEINDEX);
-					}
-					placeDocSet.add(docDictionary.get(fileId));
-					authorIndex.put(IndexHelper.PLACEINDEX, placeDocSet);
+					addtoDictionaryAndIndex(placeDictionary,
+							generateHash(term), placeIndex, term, fileId);
 				}
 			}
-			// if (d.getField(FieldNames.CONTENT) != null) {
-			// TokenStream ts = tokenizer.consume(d
-			// .getField(FieldNames.CONTENT)[0]);
-			// System.out.println(ts);
-			// an = af.getAnalyzerForField(FieldNames.CONTENT, ts);
-			// while (an.increment())
-			// ;
+			if (d.getField(FieldNames.CONTENT) != null) {
+				TokenStream ts = tokenizer.consume(d
+						.getField(FieldNames.CONTENT)[0]);
+				System.out.println(ts);
+				an = af.getAnalyzerForField(FieldNames.CONTENT, ts);
+				while (an.increment())
+					;
 
-			// System.out.println("Final: " + ts);
-			// ts.reset();
-			// Map<String, Integer> documentList;
-			// while (ts.hasNext()) {
-			// Token token = ts.next();
-			// String term = token.getTermText();
-			// System.out.println(term);
-			// Integer count = 1;
-			// if (!termPostings.containsKey(term)) {
-			// documentList = new HashMap<String, Integer>();
-			// } else {
-			// documentList = termPostings.get(term);
-			// if (documentList.containsKey(fileId)) {
-			// count = documentList.get(fileId);
-			// count++;
-			// }
-			// }
-			// documentList.put(fileId, count);
-			// termPostings.put(term, documentList);
-			// }
-			// System.out.println(termPostings.get("bid"));
-			// }
+				System.out.println("Final: " + ts);
+				ts.reset();
+				while (ts.hasNext()) {
+					Token token = ts.next();
+					String term = token.getTermText();
+					addtoDictionaryAndIndex(termDictionary, generateHash(term),
+							termIndex, term, fileId);
+
+					addToTermMapping(term, fileId);
+				}
+			}
 
 		} catch (TokenizerException te) {
 			te.printStackTrace();
 		}
-		// } catch (FileNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 	}
 
 	private boolean writeToDisk(Map dictionary, String fileName) {

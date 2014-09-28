@@ -21,7 +21,6 @@ public class CategoryAnalyzer extends FieldAnalyzer {
 
 	@Override
 	public boolean increment() throws TokenizerException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
