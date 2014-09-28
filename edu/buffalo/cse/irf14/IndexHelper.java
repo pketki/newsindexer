@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
@@ -37,13 +38,24 @@ public final class IndexHelper {
 			String.CASE_INSENSITIVE_ORDER);
 	public static List<String> stopWordsList = new ArrayList<String>();
 
-	public static Map<IndexType, String> postingsMapping = new HashMap<IndexType, String>();
+	public static String docDictionaryName = "Document_Dictionary.ser";
+	public static String termPostings = "termPostings.ser";
+	public static Map<IndexType, String> indexMapping = new HashMap<IndexType, String>();
+	public static Map<IndexType, String> dictionaryMapping = new HashMap<IndexType, String>();
+	public static int PLACEINDEX = 0;
 
 	static {
-		postingsMapping.put(IndexType.AUTHOR, "authorPostings.ser");
-		postingsMapping.put(IndexType.CATEGORY, "categoryPostings.ser");
-		postingsMapping.put(IndexType.PLACE, "placePostings.ser");
-		postingsMapping.put(IndexType.TERM, "termPostings.ser");
+		dictionaryMapping.put(IndexType.AUTHOR, "Author_Dictionary.ser");
+		dictionaryMapping.put(IndexType.CATEGORY, "Category_Dictionary.ser");
+		dictionaryMapping.put(IndexType.PLACE, "Place_Dictionary.ser");
+		dictionaryMapping.put(IndexType.TERM, "Term_Dictionary.ser");
+	}
+
+	static {
+		indexMapping.put(IndexType.AUTHOR, "Author_Index.ser");
+		indexMapping.put(IndexType.PLACE, "Place_Index.ser");
+		indexMapping.put(IndexType.CATEGORY, "Category_Index.ser");
+		indexMapping.put(IndexType.TERM, "Term_Index.ser");
 	}
 
 	static {
@@ -279,19 +291,26 @@ public final class IndexHelper {
 		return result;
 	}
 
-	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(
-			Map<K, V> map) {
-		LinkedList<Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(
+	public static <K, V extends Comparable<? super V>> Map<String, Set<String>> sortByValue(
+			Map<String, Set<String>> map) {
+		LinkedList<Entry<String, Set<String>>> list = new LinkedList<Map.Entry<String, Set<String>>>(
 				map.entrySet());
-		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
-			@Override
-			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
-				return (o2.getValue()).compareTo(o1.getValue());
-			}
-		});
+		Collections.sort(list,
+				new Comparator<Map.Entry<String, Set<String>>>() {
+					@Override
+					public int compare(Map.Entry<String, Set<String>> o1,
+							Map.Entry<String, Set<String>> o2) {
+						if (o2.getValue().size() > o1.getValue().size()) {
+							return 1;
+						} else if (o2.getValue().size() == o1.getValue().size()) {
+							return 0;
+						} else
+							return -1;
+					}
+				});
 
-		Map<K, V> result = new LinkedHashMap<K, V>();
-		for (Map.Entry<K, V> entry : list) {
+		Map<String, Set<String>> result = new LinkedHashMap<String, Set<String>>();
+		for (Entry<String, Set<String>> entry : list) {
 			result.put(entry.getKey(), entry.getValue());
 		}
 		return result;

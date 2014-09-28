@@ -142,7 +142,7 @@ public class IndexerTest {
 	public final void testGetTopK() {
 		// positive cases
 		List<String> topK = null;
-		String[] vals = { "sales", "home", "july" };
+		String[] vals = { "home", "sales", "july" };
 
 		for (int i = 0; i < 3; i++) {
 			vals[i] = getAnalyzedTerm(vals[i]);

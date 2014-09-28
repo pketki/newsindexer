@@ -29,11 +29,11 @@ public class Runner {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String ipDir = "C:/git/newsindexer/training";
+		String ipDir = "C:\\Users\\Dell\\Downloads\\news_training\\training";
 		// args[0];
 		// String ipDir = "C:/KettWorkspace/inputfile";
-		String indexDir = "C:\\KettWorkspace\\serializedfiles";// args[1];
-		// String indexDir = "D:\\test";// args[1];
+		// String indexDir = "C:\\KettWorkspace\\serializedfiles";// args[1];
+		String indexDir = "D:\\test";// args[1];
 		// more? idk!
 
 		File ipDirectory = new File(ipDir);
@@ -57,7 +57,7 @@ public class Runner {
 					try {
 						d = Parser.parse(dir.getAbsolutePath() + File.separator
 								+ f);
-						System.out.println(d);
+						// System.out.println(d);
 
 						writer.addDocument(d);
 					} catch (ParserException e) {
@@ -71,7 +71,7 @@ public class Runner {
 			writer.close();
 
 			IndexReader reader = new IndexReader(indexDir, IndexType.TERM);
-			System.out.println(reader.getPostings("Ketki Purandare"));
+			System.out.println(reader.getTopK(10));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
