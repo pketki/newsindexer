@@ -68,6 +68,7 @@ public class IndexReader {
 						postingsMap = new HashMap<Integer, Map<String, Integer>>();
 						postingsMap = ((Map<Integer, Map<String, Integer>>) objectInputStream
 								.readObject());
+						break;
 					}
 				}
 			}
@@ -99,6 +100,7 @@ public class IndexReader {
 						this.indexMap = new HashMap<String, Set<String>>();
 						this.indexMap = ((Map<String, Set<String>>) objectInputStream
 								.readObject());
+						break;
 					}
 				}
 			}

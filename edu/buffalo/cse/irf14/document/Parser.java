@@ -33,7 +33,6 @@ public class Parser {
 		if (!file.exists())
 			throw new ParserException();
 
-		System.out.println(file.getName());
 		final Document document = new Document();
 
 		document.setField(FieldNames.FILEID, file.getName());
@@ -89,7 +88,8 @@ public class Parser {
 					// if a file is unformatted and has no date put everything
 					// in content
 					if (!reader.hasNext()) {
-						content.append(placeString);
+						if (!placeString.isEmpty())
+							content.append(placeString);
 						break;
 					}
 
@@ -101,16 +101,18 @@ public class Parser {
 						placeString = placeString.substring(0,
 								placeString.length() - 1);
 					}
-					document.setField(FieldNames.PLACE, placeString);
+					if (!placeString.isEmpty())
+						document.setField(FieldNames.PLACE, placeString);
 
 					date = reader.next() + " " + reader.next();
 					document.setField(FieldNames.NEWSDATE, date);
 
 				} else {
-					content.append(line + " ");
+					content.append(line.trim() + " ");
 				}
 			}
-			document.setField(FieldNames.CONTENT, content.toString().trim());
+			if (!content.toString().trim().isEmpty())
+				document.setField(FieldNames.CONTENT, content.toString().trim());
 			reader.close();
 
 		} catch (FileNotFoundException e) {
