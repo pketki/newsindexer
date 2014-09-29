@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.irf14.analysis.types;
 
+import edu.buffalo.cse.irf14.analysis.Token;
 import edu.buffalo.cse.irf14.analysis.TokenFilter;
 import edu.buffalo.cse.irf14.analysis.TokenFilterType;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
@@ -22,12 +23,21 @@ public class AuthorAnalyzer extends FieldAnalyzer {
 	public boolean increment() throws TokenizerException {
 		TokenFilter accentFilter = factory.getFilterByType(
 				TokenFilterType.ACCENT, this.getStream());
-		TokenFilter capitalFilter = factory.getFilterByType(
-				TokenFilterType.CAPITALIZATION, this.getStream());
 
-		capitalFilter.setChaining(true);
+		accentFilter.increment();
 
-		return accentFilter.increment() && capitalFilter.increment();
+		Token token = getStream().getCurrent();
+		if (token == null && getStream().hasNext()) {
+			token = getStream().next();
+		}
+		if (token != null) {
+			if (getStream().hasNext()) {
+				token.merge(getStream().next());
+				getStream().remove();
+			}
+			token.setTermText(token.getTermText().toLowerCase());
+			return true;
+		}
+		return false;
 	}
-
 }

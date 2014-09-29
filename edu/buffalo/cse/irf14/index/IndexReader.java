@@ -28,7 +28,7 @@ public class IndexReader {
 	private final IndexType type;
 	private FileInputStream fileInputStream;
 	private ObjectInputStream objectInputStream;
-	private Map<Integer, Map<String, Integer>> postingsMap = null;
+	private Map<String, Map<String, Integer>> postingsMap = null;
 	private Map<String, Set<String>> indexMap = null;
 	private Map<String, Integer> dictionaryMap;
 	private Map<String, Integer> docDictionaryMap;
@@ -55,7 +55,7 @@ public class IndexReader {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Map<Integer, Map<String, Integer>> getTermPostings() {
+	private Map<String, Map<String, Integer>> getTermPostings() {
 		try {
 			File fileDir = new File(this.indexDir);
 			File[] fileList = fileDir.listFiles();
@@ -65,8 +65,8 @@ public class IndexReader {
 					if (fileInputStream != null) {
 						objectInputStream = new ObjectInputStream(
 								fileInputStream);
-						postingsMap = new HashMap<Integer, Map<String, Integer>>();
-						postingsMap = ((Map<Integer, Map<String, Integer>>) objectInputStream
+						postingsMap = new HashMap<String, Map<String, Integer>>();
+						postingsMap = ((Map<String, Map<String, Integer>>) objectInputStream
 								.readObject());
 						break;
 					}
@@ -214,22 +214,43 @@ public class IndexReader {
 	public List<String> getTopK(int k) {
 
 		int count = 0;
-		List<String> topKlist = new ArrayList<String>();
+		List<String> topKlist = null;
+		if (k > 0) {
+			if (IndexType.TERM == this.type) {
+				if (this.postingsMap == null)
+					this.postingsMap = getTermPostings();
+				Map<String, Integer> sortMap = new HashMap<String, Integer>();
+				topKlist = new ArrayList<String>();
+				for (Entry<String, Map<String, Integer>> entry : this.postingsMap
+						.entrySet()) {
+					sortMap.put(entry.getKey(), entry.getValue().size());
+				}
+				Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
+				sortedMap = IndexHelper.sortByFrequency(sortMap);
+				for (Entry<String, Integer> entry : sortedMap.entrySet()) {
+					count++;
+					topKlist.add(entry.getKey().toString());
+					if (count == k) {
+						break;
+					}
+				}
 
-		if (k > 0 && this.indexMap != null) {
-			Map<String, Set<String>> sortedMap = new LinkedHashMap<String, Set<String>>();
-			sortedMap = IndexHelper.sortByValue(indexMap);
+			}
 
-			for (Entry<String, Set<String>> entry : sortedMap.entrySet()) {
-				count++;
-				topKlist.add(entry.getKey());
-				if (count == k) {
-					break;
+			else if (this.indexMap != null) {
+				Map<String, Set<String>> sortedMap = new LinkedHashMap<String, Set<String>>();
+				sortedMap = IndexHelper.sortBySize(indexMap);
+				topKlist = new ArrayList<String>();
+				for (Entry<String, Set<String>> entry : sortedMap.entrySet()) {
+					count++;
+					topKlist.add(entry.getKey());
+					if (count == k) {
+						break;
+					}
 				}
 			}
-			return topKlist;
 		}
-		return null;
+		return topKlist;
 	}
 
 	/**

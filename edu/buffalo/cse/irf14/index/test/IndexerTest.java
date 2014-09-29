@@ -45,7 +45,7 @@ public class IndexerTest {
 				"july new home sales rise" };
 		int len = strs.length;
 		Document d;
-		String dir = "D:\\test";
+		String dir = "C:\\KettWorkspace\\serializedfiles";
 		IndexWriter writer = new IndexWriter(dir); // set this beforehand
 		for (int i = 0; i < len; i++) {
 			d = new Document();
@@ -59,7 +59,8 @@ public class IndexerTest {
 
 	@Before
 	public final void before() {
-		reader = new IndexReader("D:\\test", IndexType.TERM);
+		reader = new IndexReader("C:\\KettWorkspace\\serializedfiles",
+				IndexType.TERM);
 	}
 
 	/**

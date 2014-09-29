@@ -291,7 +291,7 @@ public final class IndexHelper {
 		return result;
 	}
 
-	public static <K, V extends Comparable<? super V>> Map<String, Set<String>> sortByValue(
+	public static <K, V extends Comparable<? super V>> Map<String, Set<String>> sortBySize(
 			Map<String, Set<String>> map) {
 		LinkedList<Entry<String, Set<String>>> list = new LinkedList<Map.Entry<String, Set<String>>>(
 				map.entrySet());
@@ -311,6 +311,24 @@ public final class IndexHelper {
 
 		Map<String, Set<String>> result = new LinkedHashMap<String, Set<String>>();
 		for (Entry<String, Set<String>> entry : list) {
+			result.put(entry.getKey(), entry.getValue());
+		}
+		return result;
+	}
+
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByFrequency(
+			Map<K, V> map) {
+		LinkedList<Entry<K, V>> list = new LinkedList<Map.Entry<K, V>>(
+				map.entrySet());
+		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
+			@Override
+			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
+				return (o2.getValue()).compareTo(o1.getValue());
+			}
+		});
+
+		Map<K, V> result = new LinkedHashMap<K, V>();
+		for (Map.Entry<K, V> entry : list) {
 			result.put(entry.getKey(), entry.getValue());
 		}
 		return result;

@@ -49,7 +49,7 @@ public class Parser {
 
 				line = reader.nextLine();
 
-				if (line.isEmpty())
+				if (line.trim().isEmpty())
 					continue;
 
 				// assuming first line is always title and it is a one-liner
@@ -75,7 +75,8 @@ public class Parser {
 						}
 						document.setField(FieldNames.AUTHOR,
 								author.toArray(new String[author.size()]));
-						document.setField(FieldNames.AUTHORORG, authorOrg);
+						if (authorOrg != null)
+							document.setField(FieldNames.AUTHORORG, authorOrg);
 					}
 
 					// capture place till date token arrives
