@@ -61,7 +61,7 @@ public class Parser {
 						reader.findInLine("by|By|BY");
 						line = reader.nextLine();
 						String[] authorInfo = line.trim().split(
-								",| and|</AUTHOR>");
+								",| and| AND|</AUTHOR>");
 						// first or only entry will be considered author name
 						if (authorInfo.length > 0)
 							author.add(authorInfo[0].trim());

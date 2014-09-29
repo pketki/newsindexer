@@ -133,11 +133,13 @@ public class Token {
 	 *            The token array to be merged
 	 */
 	public void merge(Token... tokens) {
-		StringBuilder mergedText = new StringBuilder(termText);
-		for (Token t : tokens) {
-			mergedText.append(" " + t.getTermText());
+		if (tokens != null) {
+			StringBuilder mergedText = new StringBuilder(termText);
+			for (Token t : tokens) {
+				mergedText.append(" " + t.getTermText());
+			}
+			this.setTermText(mergedText.toString().trim());
 		}
-		this.setTermText(mergedText.toString().trim());
 	}
 
 	/**

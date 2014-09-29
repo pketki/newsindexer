@@ -53,15 +53,10 @@ public class CapitalizationFilter extends TokenFilter {
 					// check upto 2 next tokens for all caps
 					final Token next1 = getStream().next();
 					if (next1 != null && next1.getTermText().matches(regex)) {
-						if (getStream().hasNext()) {
-							final Token next2 = getStream().next();
-							if (next2.getTermText().matches(regex)) {
-								next1.setAllCaps(true);
-								next2.setAllCaps(true);
-								text = text.toLowerCase();
-							}
-						} else {
+						final Token next2 = getStream().next();
+						if (next2 != null && next2.getTermText().matches(regex)) {
 							next1.setAllCaps(true);
+							next2.setAllCaps(true);
 							text = text.toLowerCase();
 						}
 					}

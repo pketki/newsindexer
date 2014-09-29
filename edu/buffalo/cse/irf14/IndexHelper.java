@@ -274,7 +274,7 @@ public final class IndexHelper {
 	 *            : The token string
 	 * @return The formatted string
 	 */
-	public static String filterHyphen(String input) {
+	public static String filterHyphen(String input, String replaceStr) {
 		String result = "";
 		if (input.trim().length() > 1) {
 			String[] parts = input.split("-");
@@ -284,7 +284,7 @@ public final class IndexHelper {
 					result = input;
 					break;
 				}
-				result = input.replaceAll("-", " ");
+				result = input.replaceAll("-", replaceStr);
 			}
 			result = result.trim();
 		}

@@ -27,10 +27,10 @@ public class SymbolFilter extends TokenFilter {
 
 	/**
 	 * Method to handle apostrophes in the token string as per following rules:
-	 * 1. Any possessive apostrophes should be removed (�s s� or just � at
-	 * the end of a word). 2. Common contractions should be replaced with
-	 * expanded forms but treated as one token. (e.g. should�ve => should
-	 * have). 3. All other apostrophes should be removed.
+	 * 1. Any possessive apostrophes should be removed (�s s� or just � at the
+	 * end of a word). 2. Common contractions should be replaced with expanded
+	 * forms but treated as one token. (e.g. should�ve => should have). 3. All
+	 * other apostrophes should be removed.
 	 * 
 	 * @param input
 	 *            : The token string
@@ -84,7 +84,7 @@ public class SymbolFilter extends TokenFilter {
 			}
 
 			if (text.contains("-")) {
-				text = IndexHelper.filterHyphen(text);
+				text = IndexHelper.filterHyphen(text, " ");
 			}
 
 			if (text.isEmpty())
