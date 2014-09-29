@@ -157,6 +157,11 @@ public class IndexReader {
 	 * @return The total number of terms
 	 */
 	public int getTotalKeyTerms() {
+		if (this.type == IndexType.TERM) {
+			if (this.postingsMap == null)
+				this.postingsMap = getTermPostings();
+			return this.postingsMap.size();
+		}
 		if (this.dictionaryMap != null) {
 			return dictionaryMap.size();
 		}

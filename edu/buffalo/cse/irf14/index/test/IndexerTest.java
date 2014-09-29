@@ -45,7 +45,7 @@ public class IndexerTest {
 				"july new home sales rise" };
 		int len = strs.length;
 		Document d;
-		String dir = "C:\\KettWorkspace\\serializedfiles";
+		String dir = "D:\\test";
 		IndexWriter writer = new IndexWriter(dir); // set this beforehand
 		for (int i = 0; i < len; i++) {
 			d = new Document();
@@ -59,8 +59,7 @@ public class IndexerTest {
 
 	@Before
 	public final void before() {
-		reader = new IndexReader("C:\\KettWorkspace\\serializedfiles",
-				IndexType.TERM);
+		reader = new IndexReader("D:\\test", IndexType.TERM);
 	}
 
 	/**
@@ -143,7 +142,7 @@ public class IndexerTest {
 	public final void testGetTopK() {
 		// positive cases
 		List<String> topK = null;
-		String[] vals = { "home", "sales", "july" };
+		String[] vals = { "sales", "home", "july" };
 
 		for (int i = 0; i < 3; i++) {
 			vals[i] = getAnalyzedTerm(vals[i]);

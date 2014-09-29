@@ -314,9 +314,9 @@ public class IndexWriter {
 			placeDictionary.put(key, placeCount++);
 		}
 
-		for (String key : termIndex.keySet()) {
-			termDictionary.put(key, termCount++);
-		}
+		// for (String key : termIndex.keySet()) {
+		// termDictionary.put(key, termCount++);
+		// }
 
 		if (!(writeToDisk(authorDictionary, "Author_Dictionary")
 				&& writeToDisk(authorIndex, "Author_Index")
