@@ -304,7 +304,7 @@ public class IndexWriter {
 		for (String key : authorIndex.keySet()) {
 			authorDictionary.put(key, authorCount++);
 		}
-		System.out.println(authorDictionary);
+		// System.out.println(authorDictionary);
 
 		for (String key : categoryIndex.keySet()) {
 			categoryDictionary.put(key, categoryCount++);

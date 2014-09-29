@@ -219,11 +219,17 @@ public class IndexReader {
 			if (IndexType.TERM == this.type) {
 				if (this.postingsMap == null)
 					this.postingsMap = getTermPostings();
+				Map<String, Integer> innerMap = null;
 				Map<String, Integer> sortMap = new HashMap<String, Integer>();
 				topKlist = new ArrayList<String>();
 				for (Entry<String, Map<String, Integer>> entry : this.postingsMap
 						.entrySet()) {
-					sortMap.put(entry.getKey(), entry.getValue().size());
+					innerMap = entry.getValue();
+					int termCount = 0;
+					for (Entry<String, Integer> ent : innerMap.entrySet()) {
+						termCount = termCount + ent.getValue();
+					}
+					sortMap.put(entry.getKey(), termCount);
 				}
 				Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
 				sortedMap = IndexHelper.sortByFrequency(sortMap);

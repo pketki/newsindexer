@@ -30,11 +30,9 @@ public class AuthorAnalyzer extends FieldAnalyzer {
 		if (token == null && getStream().hasNext()) {
 			token = getStream().next();
 		}
-		if (token != null) {
-			if (getStream().hasNext()) {
-				token.merge(getStream().next());
-				getStream().remove();
-			}
+		if (token != null && getStream().hasNext()) {
+			token.merge(getStream().next());
+			getStream().remove();
 			token.setTermText(token.getTermText().toLowerCase());
 			return true;
 		}
