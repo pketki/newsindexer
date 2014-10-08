@@ -29,6 +29,8 @@ public class TermAnalyzer extends FieldAnalyzer {
 				TokenFilterType.ACCENT, this.getStream());
 		TokenFilter specialCharFilter = factory.getFilterByType(
 				TokenFilterType.SPECIALCHARS, getStream());
+		TokenFilter dateFilter = factory.getFilterByType(TokenFilterType.DATE,
+				getStream());
 		TokenFilter numberFilter = factory.getFilterByType(
 				TokenFilterType.NUMERIC, getStream());
 		TokenFilter capitalFilter = factory.getFilterByType(
@@ -40,6 +42,7 @@ public class TermAnalyzer extends FieldAnalyzer {
 
 		accentFilter.setChaining(true);
 		specialCharFilter.setChaining(true);
+		dateFilter.setChaining(true);
 		numberFilter.setChaining(true);
 		symbolFilter.setChaining(true);
 		stemmerFilter.setChaining(true);
@@ -47,7 +50,7 @@ public class TermAnalyzer extends FieldAnalyzer {
 
 		return capitalFilter.increment() && symbolFilter.increment()
 				&& accentFilter.increment() && specialCharFilter.increment()
-				&& numberFilter.increment() && stemmerFilter.increment()
-				&& stopwordFilter.increment();
+				&& dateFilter.increment() && numberFilter.increment()
+				&& stemmerFilter.increment() && stopwordFilter.increment();
 	}
 }

@@ -28,6 +28,8 @@ public final class IndexHelper {
 
 	public static Pattern month = Pattern
 			.compile("\\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\\D*");
+	public static Pattern monthForFilter = Pattern
+			.compile("\\b(Jan)+(uary)*|(Feb)+(ruary)*|(Mar)+(ch)*|(Apr)+(il)*|(May)+|(Jun)+(e)*|(Jul)+(y)*|(Aug)+(ust)*|(Sep)+(tember)*|(Oct)+(ober)*|(Nov)+(ember)*|(Dec)+(ember)*$");
 	public static Pattern endOfLineSymbols = Pattern.compile("\\w[.!\\?]+$");
 	public static Pattern numeric = Pattern.compile("\\d*[\\/.,\\-]?\\d*%*$");
 	// String titleRegEx = "^[A-Z0-9<>()/.,'\\-\\s]*$";
